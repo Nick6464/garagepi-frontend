@@ -37,8 +37,6 @@ function App() {
   return (
     <MsalProvider instance={pca}>
       <ThemeProvider theme={theme}>
-        {console.log('theme', theme)}
-        {console.log('darkMode', cookies.get('darkMode'))}
         <CssBaseline />
         <Router>
           {console.log('isLoggedIn', isLoggedIn)}

@@ -27,26 +27,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const cookies = new Cookies();
+
 const HomePage = () => {
   const classes = useStyles();
   const { instance, accounts } = useMsal();
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(null);
 
   useEffect(() => {
     // Check if dark mode preference is stored in a cookie
-    const cookies = new Cookies();
     const darkModeCookie = cookies.get('darkMode');
     if (darkModeCookie === 'true') {
       setDarkMode(true);
     } else if (darkModeCookie === 'false') {
       setDarkMode(false);
     }
-  }, []);
+  }, [darkMode]); // Add darkMode as a dependency
 
   const handleDarkModeToggle = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
     toggleDarkMode(newDarkMode); // Update the cookie
+    window.location.reload(); // Reload the page to apply the new theme
   };
 
   const handleLogout = () => {
@@ -60,7 +62,7 @@ const HomePage = () => {
       {/* Dark Mode Toggle and Logout */}
       <div className={classes.settingsContainer}>
         <Switch
-          checked={darkMode}
+          checked={cookies.get('darkMode')}
           onChange={handleDarkModeToggle}
           color="primary"
         />

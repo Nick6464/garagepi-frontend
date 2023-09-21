@@ -4,8 +4,7 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 // Check the user's dark mode preference from the cookie
-const isDarkMode =
-  !cookies.get('darkMode') || cookies.get('darkMode') === 'true';
+const isDarkMode = cookies.get('darkMode');
 
 const theme = createTheme({
   palette: {
