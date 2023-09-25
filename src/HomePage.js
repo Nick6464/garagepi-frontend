@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { makeStyles } from '@mui/styles';
-import { useMsal } from '@azure/msal-react';
 import { toggleDarkMode } from './utils';
 import Cookies from 'universal-cookie';
-import { Switch } from '@mui/material';
+import { Switch, Menu, MenuItem } from '@mui/material'; // Import Menu and MenuItem
+import axios from 'axios';
+import { useMSAL } from './MSALProvider';
 
 const useStyles = makeStyles((theme) => ({
   centerContainer: {
@@ -13,10 +14,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: '100vh', // Center vertically on the screen
-  },
-  largeButton: {
-    fontSize: '2rem',
+    minHeight: '100vh',
   },
   settingsContainer: {
     position: 'absolute',
@@ -31,30 +29,66 @@ const cookies = new Cookies();
 
 const HomePage = () => {
   const classes = useStyles();
-  const { instance, accounts } = useMsal();
   const [darkMode, setDarkMode] = useState(null);
+  const [jwtToken, setJwtToken] = useState(null);
+
+  // State for managing Menu
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const { logout } = useMSAL();
 
   useEffect(() => {
-    // Check if dark mode preference is stored in a cookie
     const darkModeCookie = cookies.get('darkMode');
     if (darkModeCookie === 'true') {
       setDarkMode(true);
     } else if (darkModeCookie === 'false') {
       setDarkMode(false);
     }
-  }, [darkMode]); // Add darkMode as a dependency
+  }, []);
+
+  useEffect(() => {
+    const jwtToken = cookies.get('jwtToken');
+    setJwtToken(jwtToken);
+  }, [jwtToken]);
 
   const handleDarkModeToggle = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
-    toggleDarkMode(newDarkMode); // Update the cookie
-    window.location.reload(); // Reload the page to apply the new theme
+    toggleDarkMode(newDarkMode);
+    window.location.reload();
+  };
+
+  const handleAction = () => {
+    const functionAppUrl = 'http://localhost:7071';
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwtToken}`,
+    };
+
+    axios
+      .get(`${functionAppUrl}/api/toggle`, { headers })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   };
 
   const handleLogout = () => {
-    if (accounts.length > 0) {
-      instance.logoutRedirect();
-    }
+    logout();
+    cookies.remove('jwtToken');
+    window.location.href = '/login';
+  };
+
+  // Function to open Menu
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // Function to close Menu
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -66,17 +100,21 @@ const HomePage = () => {
           onChange={handleDarkModeToggle}
           color="primary"
         />
-        <SettingsIcon onClick={handleLogout} />
+        <SettingsIcon onClick={handleMenuOpen} /> {/* Open Menu on click */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          {/* Add a MenuItem for Logout */}
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </Menu>
       </div>
 
-      {/* Centered Large Button */}
+      {/* Open and Close Buttons */}
       <div className={classes.centerContainer}>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.largeButton}
-        >
-          Very Large Button
+        <Button variant="contained" color="primary" onClick={handleAction}>
+          Toggle
         </Button>
       </div>
     </div>

@@ -1,36 +1,24 @@
 import React from 'react';
 import Button from '@mui/material/Button';
-import { useMsal } from '@azure/msal-react';
-import Cookies from 'universal-cookie';
-import { Navigate } from 'react-router-dom'; // Import Navigate
+import { Navigate } from 'react-router-dom';
+import { useMSAL } from './MSALProvider';
 
 const LoginPage = () => {
-  const { instance } = useMsal();
-  const cookies = new Cookies();
+  const { isLoggedIn, login } = useMSAL();
 
   const loginWithAzureAD = async () => {
     try {
-      // Define the scopes you need for your application
-      const request = {
-        scopes: ['openid', 'profile', 'user.read'],
-      };
-
-      // Initiate the login process
-      const response = await instance.loginPopup(request);
-
-      // Handle the login success
-      if (response) {
-        // Store the JWT token in a secure cookie
-        const token = response.accessToken;
-        cookies.set('jwtToken', token, { secure: true, sameSite: 'strict' });
-
-        // Use the Navigate component to redirect to the root path
-        return <Navigate to="/" replace />;
-      }
+      login();
     } catch (error) {
       console.error('Authentication error:', error);
     }
   };
+
+  // Render the component only if the user is not logged in
+  if (isLoggedIn) {
+    console.log('LoginPage.js: isLoggedIn', isLoggedIn);
+    return <Navigate to="/" replace />; // Render nothing
+  }
 
   return (
     <div>
