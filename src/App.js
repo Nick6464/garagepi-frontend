@@ -1,54 +1,27 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import HomePage from './HomePage';
-import LoginPage from './LoginPage';
 import theme from './theme';
-import { MSALProvider, pca } from './MSALProvider';
+import { useMsal } from '@azure/msal-react';
 
 function App() {
-  const accounts = pca ? pca.getAllAccounts() : null;
-
+  const { instance, accounts } = useMsal();
   return (
-    <MSALProvider>
-      {console.log('App.js: pca', pca)}
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router>
-          <div className="App">
-            <header className="App-header">
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    accounts && accounts.length > 0 ? (
-                      <HomePage />
-                    ) : (
-                      <Navigate to="/login" replace />
-                    )
-                  }
-                />
-                <Route
-                  path="/login"
-                  element={
-                    accounts && accounts.length > 0 ? (
-                      <Navigate to="/" replace />
-                    ) : (
-                      <LoginPage />
-                    )
-                  }
-                />
-                <Route path="/*" element={<Navigate to="/login" replace />} />
-              </Routes>
-            </header>
-          </div>
-        </Router>
-      </ThemeProvider>
-    </MSALProvider>
+    <ThemeProvider theme={theme}>
+      {console.log('App.js: instance', instance)}
+      {console.log('App.js: getAllAccounts', instance.getAllAccounts())}
+      {console.log('App.js: accounts', accounts)}
+      <CssBaseline />
+      <Router>
+        <div className="App">
+          <header className="App-header">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+            </Routes>
+          </header>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 
