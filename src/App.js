@@ -25,6 +25,7 @@ export const config = {
     postLogoutRedirectUri: isDev
       ? 'https://localhost:3000'
       : 'https://brave-ocean-070b1c000.3.azurestaticapps.net/', // Indicates the page to navigate after logout.
+    grantType: 'authorization_code',
   },
   cache: {
     cacheLocation: 'localStorage',
