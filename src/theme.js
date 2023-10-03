@@ -23,7 +23,7 @@ const theme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: {
-          backgroundColor: '#003892',
+          backgroundColor: isDarkMode ? '#003892' : '#001e3c',
           color: '#fff',
           border: 'none',
           padding: '5px',

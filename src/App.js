@@ -11,6 +11,7 @@ import theme from './theme';
 import { useMsal } from '@azure/msal-react';
 import { LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
+import HttpsRedirect from 'react-https-redirect';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -67,19 +68,21 @@ function App() {
 
   return (
     <MsalProvider instance={pca}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router>
-          <div className="App">
-            <header className="App-header">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </header>
-          </div>
-        </Router>
-      </ThemeProvider>
+      <HttpsRedirect>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Router>
+            <div className="App">
+              <header className="App-header">
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </header>
+            </div>
+          </Router>
+        </ThemeProvider>
+      </HttpsRedirect>
     </MsalProvider>
   );
 }
