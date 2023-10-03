@@ -16,7 +16,7 @@ const isDev = process.env.NODE_ENV === 'development';
 
 export const config = {
   auth: {
-    clientId: '07327f0e-5960-49b3-bd2d-1ad2ddaf0a54', // Replace with your Azure AD application's client ID
+    clientId: 'b73800b9-5239-467f-a1ec-78d47a986680', // Replace with your Azure AD application's client ID
     authority:
       'https://login.microsoftonline.com/ffd3cb73-11ea-4c26-8855-6a8f5d2fd6e5',
     redirectUri: isDev
