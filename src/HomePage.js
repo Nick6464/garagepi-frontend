@@ -4,7 +4,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { makeStyles } from '@mui/styles';
 import { toggleDarkMode } from './utils';
 import Cookies from 'universal-cookie';
-import { Switch, Menu, MenuItem, Modal, Box } from '@mui/material'; // Import Menu and MenuItem
+import { Menu, MenuItem, Modal, Box } from '@mui/material'; // Import Menu and MenuItem
 import axios from 'axios';
 import LoginPage from './LoginPage';
 import { UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
