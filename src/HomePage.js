@@ -14,8 +14,6 @@ import {
 } from '@azure/msal-browser';
 import { config } from './App';
 
-const isDev = process.env.NODE_ENV === 'development';
-
 const useStyles = makeStyles((theme) => ({
   centerContainer: {
     display: 'flex',
