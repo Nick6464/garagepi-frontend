@@ -12,7 +12,6 @@ import {
   InteractionRequiredAuthError,
   InteractionStatus,
 } from '@azure/msal-browser';
-import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   centerContainer: {
@@ -37,8 +36,6 @@ const HomePage = () => {
   const classes = useStyles();
   const [darkMode, setDarkMode] = useState(null);
   const [token, setToken] = useState(null);
-
-  const navigate = useNavigate();
 
   // State for managing Menu
   const [anchorEl, setAnchorEl] = useState(null);
