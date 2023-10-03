@@ -12,19 +12,11 @@ import { useMsal } from '@azure/msal-react';
 import { LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
 
-const isDev = process.env.NODE_ENV === 'development';
-
 export const config = {
   auth: {
     clientId: 'b73800b9-5239-467f-a1ec-78d47a986680', // Replace with your Azure AD application's client ID
     authority:
       'https://login.microsoftonline.com/ffd3cb73-11ea-4c26-8855-6a8f5d2fd6e5',
-    redirectUri: isDev
-      ? '/'
-      : 'https://brave-ocean-070b1c000.3.azurestaticapps.net', // You must register this URI on Azure Portal/App Registration. Defaults to window.location.origin
-    postLogoutRedirectUri: isDev
-      ? 'https://localhost:3000'
-      : 'https://brave-ocean-070b1c000.3.azurestaticapps.net/', // Indicates the page to navigate after logout.
     grantType: 'authorization_code',
   },
   cache: {

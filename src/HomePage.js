@@ -13,6 +13,7 @@ import {
   InteractionStatus,
 } from '@azure/msal-browser';
 import { config } from './App';
+import DarkModeSwitch from './DarkModeSwitch';
 
 const useStyles = makeStyles((theme) => ({
   centerContainer: {
@@ -139,10 +140,10 @@ const HomePage = () => {
     <div>
       {/* Dark Mode Toggle and Logout */}
       <div className={classes.settingsContainer}>
-        <Switch
-          checked={cookies.get('darkMode')}
+        <DarkModeSwitch
+          sx={{ m: 1 }}
+          checked={darkMode}
           onChange={handleDarkModeToggle}
-          color="primary"
         />
         <SettingsIcon onClick={handleMenuOpen} /> {/* Open Menu on click */}
         <Menu
