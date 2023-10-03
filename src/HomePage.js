@@ -12,6 +12,9 @@ import {
   InteractionRequiredAuthError,
   InteractionStatus,
 } from '@azure/msal-browser';
+import { config } from './App';
+
+const isDev = process.env.NODE_ENV === 'development';
 
 const useStyles = makeStyles((theme) => ({
   centerContainer: {
@@ -110,12 +113,16 @@ const HomePage = () => {
   const handleLogout = async () => {
     console.log('HomePage.js: handleLogout', accounts);
 
-    const logoutRequest = {
-      account: accounts[0].homeAccountId,
-      postLogoutRedirectUri: '/', //your_app_logout_redirect_uri
-    };
-    instance.logoutRedirect(logoutRequest);
-    window.location.reload();
+    // Check if there is an active account
+    const activeAccount = instance.getActiveAccount();
+    if (activeAccount) {
+      // Clear tokens from local storage based on the cache location
+      const cacheLocation = activeAccount.tokenCache.cacheLocation;
+      localStorage.removeItem(`msal.idtoken.${cacheLocation}`);
+      localStorage.removeItem(`msal.accessToken.${cacheLocation}`);
+    }
+
+    instance.logoutRedirect(config);
   };
 
   // Function to open Menu

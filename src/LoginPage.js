@@ -12,6 +12,7 @@ const LoginPage = () => {
       await instance.loginRedirect({
         scopes: ['User.Read'],
         prompt: 'select_account',
+        grant_type: 'authorization_code',
       });
     } catch (error) {
       console.error('Authentication error:', error);

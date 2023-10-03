@@ -22,8 +22,9 @@ export const config = {
     redirectUri: isDev
       ? '/'
       : 'https://brave-ocean-070b1c000.3.azurestaticapps.net/', // You must register this URI on Azure Portal/App Registration. Defaults to window.location.origin
-    postLogoutRedirectUri: '/', // Indicates the page to navigate after logout.
-    grant_type: 'authorization_code',
+    postLogoutRedirectUri: isDev
+      ? 'https://localhost:3000'
+      : 'https://brave-ocean-070b1c000.3.azurestaticapps.net/', // Indicates the page to navigate after logout.
   },
   cache: {
     cacheLocation: 'localStorage',
@@ -35,15 +36,6 @@ export const config = {
           return;
         }
         switch (level) {
-          case LogLevel.Error:
-            console.error(message);
-            return;
-          case LogLevel.Info:
-            console.info(message);
-            return;
-          case LogLevel.Verbose:
-            console.debug(message);
-            return;
           case LogLevel.Warning:
             console.warn(message);
             return;
@@ -54,25 +46,26 @@ export const config = {
     },
   },
 };
+
 const pca = new PublicClientApplication(config);
 
 function App() {
   const { accounts, acquireTokenSilent } = useMsal();
 
-  useEffect(() => {
-    async function getTokenSilently() {
-      if (accounts.length > 0) {
-        try {
-          const response = await acquireTokenSilent();
-          console.log('Silent token acquisition successful', response);
-        } catch (error) {
-          console.error('Silent token acquisition failed', error);
-        }
-      }
-    }
+  // useEffect(() => {
+  //   async function getTokenSilently() {
+  //     if (accounts.length > 0) {
+  //       try {
+  //         const response = await acquireTokenSilent();
+  //         console.log('Silent token acquisition successful', response);
+  //       } catch (error) {
+  //         console.error('Silent token acquisition failed', error);
+  //       }
+  //     }
+  //   }
 
-    getTokenSilently();
-  }, [accounts, acquireTokenSilent]);
+  //   getTokenSilently();
+  // }, [accounts, acquireTokenSilent]);
 
   return (
     <MsalProvider instance={pca}>
