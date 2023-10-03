@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -56,14 +57,26 @@ export const config = {
 const pca = new PublicClientApplication(config);
 
 function App() {
-  const { instance, accounts, inProgress } = useMsal();
+  const { accounts, acquireTokenSilent } = useMsal();
+
+  useEffect(() => {
+    async function getTokenSilently() {
+      if (accounts.length > 0) {
+        try {
+          const response = await acquireTokenSilent();
+          console.log('Silent token acquisition successful', response);
+        } catch (error) {
+          console.error('Silent token acquisition failed', error);
+        }
+      }
+    }
+
+    getTokenSilently();
+  }, [accounts, acquireTokenSilent]);
+
   return (
     <MsalProvider instance={pca}>
       <ThemeProvider theme={theme}>
-        {console.log('App.js: instance', instance)}
-        {console.log('App.js: getAllAccounts', instance.getAllAccounts())}
-        {console.log('App.js: accounts', accounts)}
-        {console.log('App.js: inProgress', inProgress)}
         <CssBaseline />
         <Router>
           <div className="App">
