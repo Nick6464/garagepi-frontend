@@ -44,11 +44,11 @@ export const config = {
 };
 const pca = new PublicClientApplication(config);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+ReactDOM.render(
   <React.StrictMode>
     <MsalProvider instance={pca}>
       <App />
     </MsalProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById('root')
 );
