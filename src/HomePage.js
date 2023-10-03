@@ -45,7 +45,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const darkModeCookie = cookies.get('darkMode');
-    if (darkModeCookie === 'true') {
+    if (darkModeCookie === 'true' || darkModeCookie === undefined) {
       setDarkMode(true);
     } else if (darkModeCookie === 'false') {
       setDarkMode(false);
