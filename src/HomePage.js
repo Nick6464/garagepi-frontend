@@ -4,7 +4,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { makeStyles } from '@mui/styles';
 import { toggleDarkMode } from './utils';
 import Cookies from 'universal-cookie';
-import { Menu, MenuItem, Modal, Box } from '@mui/material'; // Import Menu and MenuItem
+import { Menu, MenuItem, Modal, Box, IconButton } from '@mui/material'; // Import Menu and MenuItem
 import axios from 'axios';
 import LoginPage from './LoginPage';
 import { UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
@@ -14,6 +14,7 @@ import {
 } from '@azure/msal-browser';
 import { config } from './App';
 import DarkModeSwitch from './DarkModeSwitch';
+import { Garage } from '@mui/icons-material';
 
 const useStyles = makeStyles((theme) => ({
   centerContainer: {
@@ -183,9 +184,21 @@ const HomePage = () => {
 
       {/* Open and Close Buttons */}
       <div className={classes.centerContainer}>
-        <Button variant="contained" color="primary" onClick={handleAction}>
+        {/* <Button
+          variant="contained"
+          color="primary"
+          sx={{ borderRadius: 100, width: 200, height: 200 }}
+          onClick={handleAction}
+        >
           Toggle
-        </Button>
+        </Button> */}
+        <IconButton
+          color="primary"
+          aria-label="toggle"
+          onClick={handleAction}
+        >
+          <Garage />
+        </IconButton>
       </div>
     </div>
   );

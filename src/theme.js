@@ -10,14 +10,30 @@ const theme = createTheme({
   palette: {
     mode: isDarkMode ? 'dark' : 'light', // Set theme type based on dark mode preference
     primary: {
-      main: '#1976D2',
+      main: '#003892',
     },
     secondary: {
-      main: '#FFA000',
+      main: '#8796A5',
     },
   },
   typography: {
     fontFamily: 'Roboto, sans-serif',
+  },
+  components: {
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#003892',
+          color: '#fff',
+          border: 'none',
+          padding: '5px',
+          fontSize: '31px',
+          height: '130px',
+          width: '130px',
+          boxShadow: '0 2px 4px darkslategray',
+        },
+      },
+    },
   },
 });
 
