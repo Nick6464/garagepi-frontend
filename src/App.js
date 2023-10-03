@@ -22,6 +22,7 @@ export const config = {
       ? '/'
       : 'https://brave-ocean-070b1c000.3.azurestaticapps.net/', // You must register this URI on Azure Portal/App Registration. Defaults to window.location.origin
     postLogoutRedirectUri: '/', // Indicates the page to navigate after logout.
+    grant_type: 'authorization_code',
   },
   cache: {
     cacheLocation: 'localStorage',
