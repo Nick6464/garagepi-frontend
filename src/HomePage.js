@@ -155,7 +155,9 @@ const HomePage = () => {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem disabled={!isAuthed} onClick={handleLogout}>
+            Logout
+          </MenuItem>
         </Menu>
         {!viewOnly && !isAuthed && <LoginPage setViewOnly={setViewOnly} />}
       </div>
