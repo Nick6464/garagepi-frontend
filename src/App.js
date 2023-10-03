@@ -52,20 +52,20 @@ const pca = new PublicClientApplication(config);
 function App() {
   const { accounts, acquireTokenSilent } = useMsal();
 
-  // useEffect(() => {
-  //   async function getTokenSilently() {
-  //     if (accounts.length > 0) {
-  //       try {
-  //         const response = await acquireTokenSilent();
-  //         console.log('Silent token acquisition successful', response);
-  //       } catch (error) {
-  //         console.error('Silent token acquisition failed', error);
-  //       }
-  //     }
-  //   }
+  useEffect(() => {
+    async function getTokenSilently() {
+      if (accounts.length > 0) {
+        try {
+          const response = await acquireTokenSilent();
+          console.log('Silent token acquisition successful', response);
+        } catch (error) {
+          console.error('Silent token acquisition failed', error);
+        }
+      }
+    }
 
-  //   getTokenSilently();
-  // }, [accounts, acquireTokenSilent]);
+    getTokenSilently();
+  }, [accounts, acquireTokenSilent]);
 
   return (
     <MsalProvider instance={pca}>
