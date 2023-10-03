@@ -9,15 +9,16 @@ const LoginPage = () => {
 
   const login = async () => {
     try {
-      await instance.loginPopup({
+      await instance.loginRedirect({
         scopes: ['User.Read'],
         prompt: 'select_account',
       });
-      navigate('/');
     } catch (error) {
       console.error('Authentication error:', error);
     }
   };
+
+  if (instance.getAllAccounts().length > 0) navigate('/');
 
   return (
     <div>
