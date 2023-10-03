@@ -114,7 +114,6 @@ const HomePage = () => {
   };
 
   const handleLogout = async () => {
-    console.log('HomePage.js: handleLogout', accounts);
 
     // Check if there is an active account
     const activeAccount = instance.getActiveAccount();
@@ -138,8 +137,6 @@ const HomePage = () => {
     setAnchorEl(null);
   };
 
-  console.log(window);
-
   return (
     <div>
       {/* Dark Mode Toggle and Logout */}
@@ -158,7 +155,6 @@ const HomePage = () => {
           {/* Add a MenuItem for Logout */}
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
-        {console.log('HomePage.js: Instance', instance)}
         <UnauthenticatedTemplate>
           <Modal
             onClose={handleMenuClose}
