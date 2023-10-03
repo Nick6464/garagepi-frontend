@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { makeStyles } from '@mui/styles';
 import { toggleDarkMode } from './utils';
