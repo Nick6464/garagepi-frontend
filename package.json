@@ -22,7 +22,7 @@
   },
   "scripts": {
     "start": "set HTTPS=true&&react-scripts start",
-    "build": "react-scripts build --legacy-peer-deps",
+    "build": "react-scripts build",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
