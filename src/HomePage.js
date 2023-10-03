@@ -34,6 +34,8 @@ const useStyles = makeStyles((theme) => ({
 
 const cookies = new Cookies();
 
+const isDev = process.env.NODE_ENV === 'development';
+
 const HomePage = () => {
   const classes = useStyles();
   const [darkMode, setDarkMode] = useState(null);
@@ -93,7 +95,9 @@ const HomePage = () => {
   };
 
   const handleAction = () => {
-    const functionAppUrl = 'http://localhost:7071';
+    const functionAppUrl = isDev
+      ? 'http://localhost:7071'
+      : 'https://garagepi-func.azurewebsites.net';
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -191,11 +195,7 @@ const HomePage = () => {
         >
           Toggle
         </Button> */}
-        <IconButton
-          color="primary"
-          aria-label="toggle"
-          onClick={handleAction}
-        >
+        <IconButton color="primary" aria-label="toggle" onClick={handleAction}>
           <Garage />
         </IconButton>
       </div>
