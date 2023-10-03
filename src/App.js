@@ -21,7 +21,7 @@ export const config = {
       'https://login.microsoftonline.com/ffd3cb73-11ea-4c26-8855-6a8f5d2fd6e5',
     redirectUri: isDev
       ? '/'
-      : 'https://brave-ocean-070b1c000.3.azurestaticapps.net/', // You must register this URI on Azure Portal/App Registration. Defaults to window.location.origin
+      : 'https://brave-ocean-070b1c000.3.azurestaticapps.net', // You must register this URI on Azure Portal/App Registration. Defaults to window.location.origin
     postLogoutRedirectUri: isDev
       ? 'https://localhost:3000'
       : 'https://brave-ocean-070b1c000.3.azurestaticapps.net/', // Indicates the page to navigate after logout.
