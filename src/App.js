@@ -47,10 +47,12 @@ export const config = {
   },
 };
 
-const pca = new PublicClientApplication(config);
-
 function App() {
   const { accounts, acquireTokenSilent } = useMsal();
+
+  const [pca] = React.useState(() => {
+    return new PublicClientApplication(config);
+  });
 
   useEffect(() => {
     async function getTokenSilently() {
