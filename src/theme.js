@@ -8,7 +8,7 @@ const isDarkMode = cookies.get('darkMode');
 
 const theme = createTheme({
   palette: {
-    mode: isDarkMode ? 'dark' : 'light', // Set theme type based on dark mode preference
+    mode: isDarkMode === false ? 'light' : 'dark', // Set theme type based on dark mode preference
     primary: {
       main: '#003892',
     },
