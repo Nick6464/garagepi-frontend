@@ -3,7 +3,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { makeStyles } from '@mui/styles';
 import { toggleDarkMode } from './utils';
 import Cookies from 'universal-cookie';
-import { Menu, MenuItem, IconButton } from '@mui/material'; // Import Menu and MenuItem
+import { Menu, MenuItem, IconButton, CircularProgress } from '@mui/material'; // Import Menu and MenuItem
 import axios from 'axios';
 import LoginPage from './LoginPage';
 import { useIsAuthenticated, useMsal } from '@azure/msal-react';
@@ -42,6 +42,7 @@ const HomePage = () => {
   const [token, setToken] = useState(null);
   const [viewOnly, setViewOnly] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // State for managing Menu
   const [anchorEl, setAnchorEl] = useState(null);
@@ -100,6 +101,7 @@ const HomePage = () => {
   };
 
   const handleAction = () => {
+    setLoading(true);
     const functionAppUrl = isDev
       ? 'http://localhost:7071'
       : 'https://garagepi-func.azurewebsites.net';
@@ -112,9 +114,11 @@ const HomePage = () => {
       .get(`${functionAppUrl}/api/toggle`, { headers })
       .then((response) => {
         console.log(response.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error('Error:', error);
+        setLoading(false);
         setShowError(true); // Show error message
         setTimeout(() => {
           setShowError(false); // Hide error message after 3 seconds
@@ -187,6 +191,8 @@ const HomePage = () => {
         >
           {showError ? ( // Conditional rendering for the button
             <Warning /> // Show warning icon in red
+          ) : loading ? (
+            <CircularProgress color="inherit" />
           ) : (
             <Garage />
           )}
