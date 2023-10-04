@@ -11,6 +11,7 @@ import {
   InteractionRequiredAuthError,
   InteractionStatus,
 } from '@azure/msal-browser';
+import { config } from './App';
 import DarkModeSwitch from './DarkModeSwitch';
 import { Garage, Warning } from '@mui/icons-material';
 
@@ -129,6 +130,18 @@ const HomePage = () => {
     await instance.logoutPopup({ logoutHint: logoutHint });
   };
 
+  const handleOldLogout = async () => {
+    // Check if there is an active account
+    const activeAccount = instance.getActiveAccount();
+    if (activeAccount) {
+      // Clear tokens from local storage based on the cache location
+      const cacheLocation = activeAccount.tokenCache.cacheLocation;
+      localStorage.removeItem(`msal.idtoken.${cacheLocation}`);
+      localStorage.removeItem(`msal.accessToken.${cacheLocation}`);
+    }
+    await instance.logoutPopup(config);
+  };
+
   // Function to open Menu
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -155,9 +168,8 @@ const HomePage = () => {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem disabled={!isAuthed} onClick={handleLogout}>
-            Logout
-          </MenuItem>
+          <MenuItem disabled={!isAuthed} onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem onClick={handleOldLogout}>Old Logout</MenuItem>
         </Menu>
         {!viewOnly && !isAuthed && <LoginPage setViewOnly={setViewOnly} />}
       </div>
