@@ -70,7 +70,7 @@ const HomePage = () => {
         .then((accessTokenResponse) => {
           // Acquire token success
           let idToken = accessTokenResponse.idToken;
-          console.log('Silent token acquisition successful', idToken);
+          console.log('Silent token acquisition successful');
           setToken(idToken);
         })
         .catch((error) => {
@@ -156,7 +156,6 @@ const HomePage = () => {
     <div>
       {/* Dark Mode Toggle and Logout */}
       <div className={classes.settingsContainer}>
-        {console.log(instance)}
         <DarkModeSwitch
           sx={{ m: 1 }}
           checked={darkMode}
@@ -168,7 +167,9 @@ const HomePage = () => {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem disabled={!isAuthed} onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem disabled={!isAuthed} onClick={handleLogout}>
+            Logout
+          </MenuItem>
           <MenuItem onClick={handleOldLogout}>Old Logout</MenuItem>
         </Menu>
         {!viewOnly && !isAuthed && <LoginPage setViewOnly={setViewOnly} />}
