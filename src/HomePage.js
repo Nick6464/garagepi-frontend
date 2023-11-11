@@ -186,8 +186,8 @@ const HomePage = () => {
         )}
         <IconButton
           sx={{ backgroundColor: showError ? 'red' : 'primary' }}
-          aria-label="toggle"
           onClick={handleAction}
+          disableFocusRipple
         >
           {showError ? ( // Conditional rendering for the button
             <Warning /> // Show warning icon in red
