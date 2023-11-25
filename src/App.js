@@ -20,10 +20,7 @@ export const config = {
     clientId: '6bea6dc5-5661-4e66-adfd-ffcc127ef544', // Replace with your Azure AD application's client ID
     authority:
       'https://login.microsoftonline.com/ffd3cb73-11ea-4c26-8855-6a8f5d2fd6e5',
-    redirectUri: isDev ? 'http://localhost:3000' : 'https://garagepi.site',
-    postLogoutRedirectUri: isDev
-      ? 'http://localhost:3000'
-      : 'https://garagepi.site',
+    postLogoutRedirectUri: 'https://garagepi.site',
   },
   cache: {
     cacheLocation: 'localStorage',
