@@ -14,7 +14,7 @@ const LoginPage = ({ setViewOnly }) => {
 
   const login = async () => {
     try {
-      let response = await instance.loginRedirect({
+      let response = await instance.loginPopup({
         scopes: ['User.Read'],
         prompt: 'select_account',
         grant_type: 'authorization_code',
