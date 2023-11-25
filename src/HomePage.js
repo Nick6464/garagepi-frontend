@@ -11,7 +11,6 @@ import {
   InteractionRequiredAuthError,
   InteractionStatus,
 } from '@azure/msal-browser';
-import { config } from './App';
 import DarkModeSwitch from './DarkModeSwitch';
 import { Garage, Warning } from '@mui/icons-material';
 
@@ -33,8 +32,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const cookies = new Cookies();
-
-const isDev = process.env.NODE_ENV === 'development';
 
 const HomePage = () => {
   const classes = useStyles();
