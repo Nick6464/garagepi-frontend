@@ -8,6 +8,7 @@ import {
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import HomePage from './HomePage';
 import theme from './theme';
+import Blank from './Blank';
 import { useMsal } from '@azure/msal-react';
 import { LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
