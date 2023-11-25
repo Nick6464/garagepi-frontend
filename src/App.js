@@ -19,7 +19,7 @@ export const config = {
   auth: {
     clientId: isDev
       ? '6bea6dc5-5661-4e66-adfd-ffcc127ef544'
-      : 'b73800b9-5239-467f-a1ec-78d47a986680', // Replace with your Azure AD application's client ID
+      : '6bea6dc5-5661-4e66-adfd-ffcc127ef544', // Replace with your Azure AD application's client ID
     authority:
       'https://login.microsoftonline.com/ffd3cb73-11ea-4c26-8855-6a8f5d2fd6e5',
   },
