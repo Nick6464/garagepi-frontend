@@ -131,7 +131,7 @@ const HomePage = () => {
     console.log(currentAccount);
     // logout
     const logoutHint = currentAccount.idTokenClaims.login_hint;
-    await instance.logoutPopup({ logoutHint: logoutHint });
+    await instance.logoutRedirect({ logoutHint: logoutHint });
   };
 
   const handleOldLogout = async () => {
@@ -143,7 +143,7 @@ const HomePage = () => {
       localStorage.removeItem(`msal.idtoken.${cacheLocation}`);
       localStorage.removeItem(`msal.accessToken.${cacheLocation}`);
     }
-    await instance.logoutPopup(config);
+    await instance.logoutRedirect(config);
   };
 
   // Function to open Menu
