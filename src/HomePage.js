@@ -131,7 +131,7 @@ const HomePage = () => {
     console.log(currentAccount);
     // logout
     const logoutHint = currentAccount.idTokenClaims.login_hint;
-    await instance.logoutPopup({ logoutHint: logoutHint });
+    await instance.logoutRedirect({ logoutHint: logoutHint });
   };
 
   // Function to open Menu
