@@ -144,17 +144,17 @@ const HomePage = () => {
     setAnchorEl(null);
   };
 
-  const handleOldLogout = async () => {
-    // Check if there is an active account
-    const activeAccount = instance.getActiveAccount();
-    if (activeAccount) {
-      // Clear tokens from local storage based on the cache location
-      const cacheLocation = activeAccount.tokenCache.cacheLocation;
-      localStorage.removeItem(`msal.idtoken.${cacheLocation}`);
-      localStorage.removeItem(`msal.accessToken.${cacheLocation}`);
-    }
-    await instance.logoutRedirect(config);
-  };
+  // const handleOldLogout = async () => {
+  //   // Check if there is an active account
+  //   const activeAccount = instance.getActiveAccount();
+  //   if (activeAccount) {
+  //     // Clear tokens from local storage based on the cache location
+  //     const cacheLocation = activeAccount.tokenCache.cacheLocation;
+  //     localStorage.removeItem(`msal.idtoken.${cacheLocation}`);
+  //     localStorage.removeItem(`msal.accessToken.${cacheLocation}`);
+  //   }
+  //   await instance.logoutRedirect(config);
+  // };
 
   return (
     <div>
