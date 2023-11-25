@@ -21,6 +21,7 @@ export const config = {
     authority:
       'https://login.microsoftonline.com/ffd3cb73-11ea-4c26-8855-6a8f5d2fd6e5',
     postLogoutRedirectUri: 'https://garagepi.site',
+    redirectUri: 'https://garagepi.site/loginRedirect',
   },
   cache: {
     cacheLocation: 'localStorage',
