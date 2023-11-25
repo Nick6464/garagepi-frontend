@@ -174,7 +174,7 @@ const HomePage = () => {
           <MenuItem disabled={!isAuthed} onClick={handleLogout}>
             Logout
           </MenuItem>
-          <MenuItem onClick={handleOldLogout}>Old Logout</MenuItem>
+          {/* <MenuItem onClick={handleOldLogout}>Old Logout</MenuItem> */}
         </Menu>
         {!viewOnly && !isAuthed && <LoginPage setViewOnly={setViewOnly} />}
       </div>
