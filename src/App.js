@@ -75,6 +75,7 @@ function App() {
               <header className="App-header">
                 <Routes>
                   <Route path="/" element={<HomePage />} />
+                  <Route path="loginRedirtect" element={<Blank />} />
                   <Route path="/*" element={<Navigate to="/" replace />} />
                 </Routes>
               </header>
