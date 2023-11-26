@@ -14,8 +14,6 @@ import { LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
 import HttpsRedirect from 'react-https-redirect';
 
-const isDev = process.env.NODE_ENV === 'development';
-
 export const config = {
   auth: {
     clientId: '6bea6dc5-5661-4e66-adfd-ffcc127ef544', // Replace with your Azure AD application's client ID

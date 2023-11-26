@@ -33,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
 
 const cookies = new Cookies();
 
+const isDev = process.env.NODE_ENV === 'development';
+
 const HomePage = () => {
   const classes = useStyles();
   const [darkMode, setDarkMode] = useState(null);
