@@ -42,6 +42,8 @@ const HomePage = () => {
   const [viewOnly, setViewOnly] = useState(false);
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [distanceConfirmation, setDistanceConfirmation] = useState(false);
+  const [farAway, setFarAway] = useState(false);
 
   // State for managing Menu
   const [anchorEl, setAnchorEl] = useState(null);
@@ -60,37 +62,46 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
+    const isTokenExpired = (token) => {
+      const expiration = jwtDecode(token).exp;
+      const currentTime = Date.now() / 1000;
+      return expiration < currentTime;
+    };
+
     if (inProgress === InteractionStatus.None && accounts.length > 0) {
-      const accessTokenRequest = {
-        roles: ['toggle'],
-        account: accounts[0],
-      };
-      instance
-        .acquireTokenSilent(accessTokenRequest)
-        .then((accessTokenResponse) => {
-          // Acquire token success
-          let idToken = accessTokenResponse.idToken;
-          console.log('Silent token acquisition successful');
-          setToken(idToken);
-        })
-        .catch((error) => {
-          //Acquire token silent failure, and send an interactive request
-          if (error instanceof InteractionRequiredAuthError) {
-            instance
-              .acquireTokenRedirect()
-              .then((accessTokenResponse) => {
-                // Acquire token interactive success
-                let idToken = accessTokenResponse.idToken;
-                setToken(idToken);
-              })
-              .catch((error) => {
-                // Acquire token interactive failure
-                console.error(error);
-              });
-          }
-        });
+      if (!token || isTokenExpired(token)) {
+        instance
+          .acquireTokenSilent({
+            // Adjust scopes and account parameters as needed
+            roles: ['toggle'],
+            account: accounts[0],
+          })
+          .then((accessTokenResponse) => {
+            const newToken = accessTokenResponse.idToken;
+            setToken(newToken);
+          })
+          .catch((error) => {
+            if (error instanceof InteractionRequiredAuthError) {
+              console.log('Interaction Required Error');
+              instance
+                .acquireTokenRedirect({
+                  scopes: ['your_scope'],
+                  account: accounts[0],
+                })
+                .then((accessTokenResponse) => {
+                  const newToken = accessTokenResponse.idToken;
+                  setToken(newToken);
+                })
+                .catch((error) => {
+                  console.error('Error acquiring token interactively:', error);
+                });
+            } else {
+              console.error('Error acquiring token silently:', error);
+            }
+          });
+      }
     }
-  }, [accounts, instance, inProgress]);
+  }, [accounts, token, instance, inProgress]);
 
   const handleDarkModeToggle = () => {
     const newDarkMode = !darkMode;
@@ -99,7 +110,13 @@ const HomePage = () => {
     window.location.reload();
   };
 
-  const handleAction = () => {
+  function getCurrentPosition() {
+    return new Promise((res, rej) => {
+      navigator.geolocation.getCurrentPosition(res, rej);
+    });
+  }
+
+  const handleAction = async () => {
     setLoading(true);
     const functionAppUrl = isDev
       ? 'http://localhost:7071'
@@ -107,6 +124,8 @@ const HomePage = () => {
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
+      locations: await getCurrentPosition(),
+      distanceConfirmation: distanceConfirmation,
     };
 
     axios
@@ -114,6 +133,9 @@ const HomePage = () => {
       .then((response) => {
         console.log(response.data);
         setLoading(false);
+        if (response.data.distanceWarning === true) {
+          setFarAway(true);
+        }
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -142,18 +164,6 @@ const HomePage = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
-  // const handleOldLogout = async () => {
-  //   // Check if there is an active account
-  //   const activeAccount = instance.getActiveAccount();
-  //   if (activeAccount) {
-  //     // Clear tokens from local storage based on the cache location
-  //     const cacheLocation = activeAccount.tokenCache.cacheLocation;
-  //     localStorage.removeItem(`msal.idtoken.${cacheLocation}`);
-  //     localStorage.removeItem(`msal.accessToken.${cacheLocation}`);
-  //   }
-  //   await instance.logoutRedirect(config);
-  // };
 
   return (
     <div>
