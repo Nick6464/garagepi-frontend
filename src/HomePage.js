@@ -3,7 +3,13 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { makeStyles } from '@mui/styles';
 import { toggleDarkMode } from './utils';
 import Cookies from 'universal-cookie';
-import { Menu, MenuItem, IconButton, CircularProgress } from '@mui/material'; // Import Menu and MenuItem
+import {
+  Menu,
+  MenuItem,
+  IconButton,
+  CircularProgress,
+  Dialog,
+} from '@mui/material'; // Import Menu and MenuItem
 import axios from 'axios';
 import LoginPage from './LoginPage';
 import { useIsAuthenticated, useMsal } from '@azure/msal-react';
@@ -44,6 +50,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [distanceConfirmation, setDistanceConfirmation] = useState(false);
   const [farAway, setFarAway] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   // State for managing Menu
   const [anchorEl, setAnchorEl] = useState(null);
@@ -118,6 +125,19 @@ const HomePage = () => {
 
   const handleAction = async () => {
     setLoading(true);
+
+    //If the user is more than 300m away from the geolocation of the pi, trigger a pop up
+    // for the user to confirm they want to open/close the garage door
+    if (farAway) {
+      const confirm = window.confirm(
+        'You are more than 300m away from the garage. Are you sure you want to open/close the garage?'
+      );
+      if (confirm === false) {
+        setLoading(false);
+        return;
+      }
+    }
+
     const functionAppUrl = isDev
       ? 'http://localhost:7071'
       : 'https://garagepi-func.azurewebsites.net';
@@ -141,6 +161,7 @@ const HomePage = () => {
         console.error('Error:', error);
         setLoading(false);
         setShowError(true); // Show error message
+        setSnackbarMessage(error.message);
         setTimeout(() => {
           setShowError(false); // Hide error message after 3 seconds
         }, 3000);
@@ -163,6 +184,13 @@ const HomePage = () => {
   // Function to close Menu
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
@@ -196,7 +224,7 @@ const HomePage = () => {
         <IconButton
           sx={{ backgroundColor: showError ? 'red' : 'primary' }}
           onClick={handleAction}
-          disableFocusRipple
+          disabled={viewOnly || loading}
         >
           {showError ? ( // Conditional rendering for the button
             <Warning /> // Show warning icon in red
@@ -207,6 +235,29 @@ const HomePage = () => {
           )}
         </IconButton>
       </div>
+      <Dialog open={farAway}>
+        <h1>
+          You are more than 300m away from the garage. Are you sure you want to
+          open/close the garage?
+        </h1>
+      </Dialog>
+      <Snackbar
+        open={showError}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        action={
+          <React.Fragment>
+            <Button
+              color="secondary"
+              size="small"
+              onClick={handleSnackbarClose}
+            >
+              X
+            </Button>
+          </React.Fragment>
+        }
+      />
     </div>
   );
 };
