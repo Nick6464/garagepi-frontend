@@ -15,10 +15,7 @@ import {
 import axios from 'axios';
 import LoginPage from './LoginPage';
 import { useMsal } from '@azure/msal-react';
-import {
-  InteractionRequiredAuthError,
-  InteractionStatus,
-} from '@azure/msal-browser';
+import { InteractionStatus } from '@azure/msal-browser';
 import DarkModeSwitch from './DarkModeSwitch';
 import { Garage, Warning } from '@mui/icons-material';
 import { jwtDecode } from 'jwt-decode';
@@ -100,20 +97,21 @@ const HomePage = () => {
             const newToken = accessTokenResponse.idToken;
             setToken(newToken);
           })
-          .catch((error) => {
+          .catch(async (error) => {
             console.log(
               'Silent token acquisition fails. Acquiring token using redirect'
             );
             console.log(error);
-            if (error instanceof InteractionRequiredAuthError) {
-              instance
-                .acquireTokenRedirect({
-                  // Adjust scopes and account parameters as needed
-                  scopes: ['User.Read'],
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
+            try {
+              let response = await instance.loginRedirect({
+                scopes: ['User.Read'],
+                prompt: 'select_account',
+                grant_type: 'authorization_code',
+              });
+              console.log('login response:', response);
+              instance.setActiveAccount(response.account);
+            } catch (error) {
+              console.error('Authentication error:', error);
             }
           });
       }
