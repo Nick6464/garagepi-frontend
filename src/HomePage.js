@@ -74,10 +74,15 @@ const HomePage = () => {
 
   useEffect(() => {
     const isTokenExpired = (token) => {
+      if (!token) return true;
       const expiration = jwtDecode(token).exp;
       const currentTime = Date.now() / 1000;
       return expiration < currentTime;
     };
+
+    console.log('accounts', accounts);
+    console.log('token', token);
+    console.log('inProgress', inProgress);
 
     if (inProgress === InteractionStatus.None && accounts.length > 0) {
       if (!token || (token && isTokenExpired(token))) {
@@ -112,9 +117,6 @@ const HomePage = () => {
             }
           });
       }
-      console.log('accounts', accounts);
-      console.log('token', token);
-      console.log('inProgress', inProgress);
     }
   }, [accounts, token, instance, inProgress]);
 
