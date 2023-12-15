@@ -13,7 +13,11 @@ import { LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
 import HttpsRedirect from 'react-https-redirect';
 
-const isDev = process.env.NODE_ENV === 'development';
+//is de if development or if url is https://witty-rock-0978c7700.4.azurestaticapps.net/
+const isDev =
+  process.env.NODE_ENV === 'development' ||
+  window.location.href ===
+    'https://witty-rock-0978c7700.4.azurestaticapps.net/';
 
 export const config = {
   auth: {

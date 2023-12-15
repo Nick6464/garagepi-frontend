@@ -42,7 +42,10 @@ const useStyles = makeStyles((theme) => ({
 
 const cookies = new Cookies();
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev =
+  process.env.NODE_ENV === 'development' ||
+  window.location.href ===
+    'https://witty-rock-0978c7700.4.azurestaticapps.net/';
 
 const HomePage = () => {
   const classes = useStyles();
