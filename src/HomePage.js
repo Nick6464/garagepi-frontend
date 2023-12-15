@@ -102,17 +102,6 @@ const HomePage = () => {
               'Silent token acquisition fails. Acquiring token using redirect'
             );
             console.log(error);
-            try {
-              let response = await instance.loginRedirect({
-                scopes: ['User.Read'],
-                prompt: 'select_account',
-                grant_type: 'authorization_code',
-              });
-              console.log('login response:', response);
-              instance.setActiveAccount(response.account);
-            } catch (error) {
-              console.error('Authentication error:', error);
-            }
           });
       }
     }
