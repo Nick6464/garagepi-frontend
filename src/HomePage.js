@@ -112,6 +112,9 @@ const HomePage = () => {
             }
           });
       }
+      console.log('accounts', accounts);
+      console.log('token', token);
+      console.log('inProgress', inProgress);
     }
   }, [accounts, token, instance, inProgress]);
 
