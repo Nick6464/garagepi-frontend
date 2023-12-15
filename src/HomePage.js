@@ -9,16 +9,19 @@ import {
   IconButton,
   CircularProgress,
   Dialog,
+  Snackbar,
+  Button,
 } from '@mui/material'; // Import Menu and MenuItem
 import axios from 'axios';
 import LoginPage from './LoginPage';
-import { useIsAuthenticated, useMsal } from '@azure/msal-react';
+import { useMsal } from '@azure/msal-react';
 import {
   InteractionRequiredAuthError,
   InteractionStatus,
 } from '@azure/msal-browser';
 import DarkModeSwitch from './DarkModeSwitch';
 import { Garage, Warning } from '@mui/icons-material';
+import { jwtDecode } from 'jwt-decode';
 
 const useStyles = makeStyles((theme) => ({
   centerContainer: {
@@ -57,8 +60,6 @@ const HomePage = () => {
 
   const { instance, accounts, inProgress } = useMsal();
 
-  const isAuthed = useIsAuthenticated();
-
   useEffect(() => {
     const darkModeCookie = cookies.get('darkMode');
     if (darkModeCookie === false) {
@@ -76,7 +77,7 @@ const HomePage = () => {
     };
 
     if (inProgress === InteractionStatus.None && accounts.length > 0) {
-      if (!token || isTokenExpired(token)) {
+      if (!token || (token && isTokenExpired(token))) {
         instance
           .acquireTokenSilent({
             // Adjust scopes and account parameters as needed
@@ -84,26 +85,27 @@ const HomePage = () => {
             account: accounts[0],
           })
           .then((accessTokenResponse) => {
+            console.log(
+              'Silent token acquisition successful',
+              accessTokenResponse
+            );
             const newToken = accessTokenResponse.idToken;
             setToken(newToken);
           })
           .catch((error) => {
+            console.log(
+              'Silent token acquisition fails. Acquiring token using redirect'
+            );
+            console.log(error);
             if (error instanceof InteractionRequiredAuthError) {
-              console.log('Interaction Required Error');
               instance
                 .acquireTokenRedirect({
-                  scopes: ['your_scope'],
-                  account: accounts[0],
-                })
-                .then((accessTokenResponse) => {
-                  const newToken = accessTokenResponse.idToken;
-                  setToken(newToken);
+                  // Adjust scopes and account parameters as needed
+                  scopes: ['User.Read'],
                 })
                 .catch((error) => {
-                  console.error('Error acquiring token interactively:', error);
+                  console.log(error);
                 });
-            } else {
-              console.error('Error acquiring token silently:', error);
             }
           });
       }
@@ -134,6 +136,7 @@ const HomePage = () => {
       );
       if (confirm === false) {
         setLoading(false);
+        setDistanceConfirmation(true);
         return;
       }
     }
@@ -144,7 +147,8 @@ const HomePage = () => {
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
-      locations: await getCurrentPosition(),
+      //Make the location a json string
+      location: JSON.stringify((await getCurrentPosition()).coords),
       distanceConfirmation: distanceConfirmation,
     };
 
@@ -169,11 +173,7 @@ const HomePage = () => {
   };
 
   const handleLogout = async () => {
-    const currentAccount = instance.getActiveAccount();
-    console.log(currentAccount);
-    // logout
-    const logoutHint = currentAccount.idTokenClaims.login_hint;
-    await instance.logoutRedirect({ logoutHint: logoutHint });
+    await instance.logoutRedirect();
   };
 
   // Function to open Menu
@@ -190,7 +190,7 @@ const HomePage = () => {
     if (reason === 'clickaway') {
       return;
     }
-    setSnackbarOpen(false);
+    setShowError(false);
   };
 
   return (
@@ -208,12 +208,12 @@ const HomePage = () => {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem disabled={!isAuthed} onClick={handleLogout}>
+          <MenuItem disabled={!token} onClick={handleLogout}>
             Logout
           </MenuItem>
           {/* <MenuItem onClick={handleOldLogout}>Old Logout</MenuItem> */}
         </Menu>
-        {!viewOnly && !isAuthed && <LoginPage setViewOnly={setViewOnly} />}
+        {!viewOnly && !token && <LoginPage setViewOnly={setViewOnly} />}
       </div>
 
       {/* Open and Close Buttons */}

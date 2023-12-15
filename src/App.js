@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,7 +9,6 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import HomePage from './HomePage';
 import theme from './theme';
 import Blank from './Blank';
-import { useMsal } from '@azure/msal-react';
 import { LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
 import HttpsRedirect from 'react-https-redirect';
@@ -18,13 +17,15 @@ const isDev = process.env.NODE_ENV === 'development';
 
 export const config = {
   auth: {
-    clientId: isDev ? 'test' : '6bea6dc5-5661-4e66-adfd-ffcc127ef544', // Replace with your Azure AD application's client ID
+    clientId: isDev
+      ? 'f8edf2ca-5258-4880-8494-67e374a305d1'
+      : '6bea6dc5-5661-4e66-adfd-ffcc127ef544', // Replace with your Azure AD application's client ID
     authority:
       'https://login.microsoftonline.com/ffd3cb73-11ea-4c26-8855-6a8f5d2fd6e5',
     postLogoutRedirectUri: isDev
-      ? 'http://localhost:8080'
+      ? 'https://localhost:3000'
       : 'https://garagepi.site',
-    redirectUri: isDev ? 'http://localhost:8080' : 'https://garagepi.site',
+    redirectUri: isDev ? 'https://localhost:3000' : 'https://garagepi.site',
   },
   cache: {
     cacheLocation: 'localStorage',
@@ -49,26 +50,9 @@ export const config = {
 };
 
 function App() {
-  const { accounts, acquireTokenSilent } = useMsal();
-
   const [pca] = React.useState(() => {
     return new PublicClientApplication(config);
   });
-
-  useEffect(() => {
-    async function getTokenSilently() {
-      if (accounts.length > 0) {
-        try {
-          const response = await acquireTokenSilent();
-          console.log('Silent token acquisition successful', response);
-        } catch (error) {
-          console.error('Silent token acquisition failed', error);
-        }
-      }
-    }
-
-    getTokenSilently();
-  }, [accounts, acquireTokenSilent]);
 
   return (
     <MsalProvider instance={pca}>
