@@ -118,30 +118,30 @@ const HomePage = () => {
     console.log('token', token);
     console.log('inProgress', inProgress);
 
-    if (inProgress === InteractionStatus.None && accounts.length > 0) {
-      if (!token || (token && isTokenExpired(token))) {
-        instance
-          .acquireTokenSilent({
-            // Adjust scopes and account parameters as needed
-            roles: ['toggle'],
-            account: accounts[0],
-          })
-          .then((accessTokenResponse) => {
-            console.log(
-              'Silent token acquisition successful',
-              accessTokenResponse
-            );
-            const newToken = accessTokenResponse.idToken;
-            setToken(newToken);
-          })
-          .catch(async (error) => {
-            console.log(
-              'Silent token acquisition fails. Acquiring token using redirect'
-            );
-            console.log(error);
-          });
-      }
-    }
+    // if (inProgress === InteractionStatus.None && accounts.length > 0) {
+    //   if (!token || (token && isTokenExpired(token))) {
+    //     instance
+    //       .acquireTokenSilent({
+    //         // Adjust scopes and account parameters as needed
+    //         roles: ['toggle'],
+    //         account: accounts[0],
+    //       })
+    //       .then((accessTokenResponse) => {
+    //         console.log(
+    //           'Silent token acquisition successful',
+    //           accessTokenResponse
+    //         );
+    //         const newToken = accessTokenResponse.idToken;
+    //         setToken(newToken);
+    //       })
+    //       .catch(async (error) => {
+    //         console.log(
+    //           'Silent token acquisition fails. Acquiring token using redirect'
+    //         );
+    //         console.log(error);
+    //       });
+    //   }
+    // }
   }, [accounts, token, instance, inProgress]);
 
   const handleDarkModeToggle = () => {
