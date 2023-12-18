@@ -107,6 +107,47 @@ const HomePage = () => {
     }
   }, [accounts, token, instance, inProgress]);
 
+  useEffect(() => {
+    const accounts = instance.getAllAccounts();
+    if (accounts.length > 0) {
+      instance.setActiveAccount(accounts[0]);
+    }
+
+    instance.addEventCallback(
+      (event) => {
+        // set active account after redirect
+        if (
+          event.eventType === InteractionStatus.LOGIN_SUCCESS &&
+          event.payload.account
+        ) {
+          const account = event.payload.account;
+          instance.setActiveAccount(account);
+        }
+      },
+      (error) => {
+        console.log('error', error);
+      }
+    );
+
+    console.log('get active account', instance.getActiveAccount());
+
+    // handle auth redirect/do all initial setup for msal
+    instance
+      .handleRedirectPromise()
+      .then((authResult) => {
+        // Check if user signed in
+        const account = instance.getActiveAccount();
+        if (!account) {
+          // redirect anonymous user to login page
+          instance.loginRedirect();
+        }
+      })
+      .catch((err) => {
+        // TODO: Handle errors
+        console.log(err);
+      });
+  }, [instance]);
+
   const handleDarkModeToggle = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
