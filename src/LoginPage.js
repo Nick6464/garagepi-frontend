@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@mui/material/Button';
 import { useMsal } from '@azure/msal-react';
+import { InteractionStatus } from '@azure/msal-browser';
 import {
   Dialog,
   DialogActions,
@@ -11,6 +12,24 @@ import {
 
 const LoginPage = ({ setViewOnly }) => {
   const { instance } = useMsal();
+
+  useEffect(() => {
+    instance.addEventCallback(
+      (event) => {
+        // set active account after redirect
+        if (
+          event.eventType === InteractionStatus.LOGIN_SUCCESS &&
+          event.payload.account
+        ) {
+          const account = event.payload.account;
+          instance.setActiveAccount(account);
+        }
+      },
+      (error) => {
+        console.log('error', error);
+      }
+    );
+  }, [instance]);
 
   const login = async () => {
     try {

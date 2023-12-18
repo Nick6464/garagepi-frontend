@@ -74,39 +74,10 @@ const HomePage = () => {
     if (accounts.length > 0) {
       instance.setActiveAccount(accounts[0]);
     }
-    instance.addEventCallback(
-      (event) => {
-        // set active account after redirect
-        if (
-          event.eventType === InteractionStatus.LOGIN_SUCCESS &&
-          event.payload.account
-        ) {
-          const account = event.payload.account;
-          instance.setActiveAccount(account);
-        }
-      },
-      (error) => {
-        console.log('error', error);
-      }
-    );
 
     console.log('get active account', instance.getActiveAccount());
 
-    // handle auth redirect/do all initial setup for msal
-    instance
-      .handleRedirectPromise()
-      .then((authResult) => {
-        // Check if user signed in
-        const account = instance.getActiveAccount();
-        if (!account) {
-          // redirect anonymous user to login page
-          instance.loginRedirect();
-        }
-      })
-      .catch((err) => {
-        // TODO: Handle errors
-        console.log(err);
-      });
+
     const isTokenExpired = (token) => {
       if (!token) return true;
       const expiration = jwtDecode(token).exp;
@@ -118,30 +89,30 @@ const HomePage = () => {
     console.log('token', token);
     console.log('inProgress', inProgress);
 
-    // if (inProgress === InteractionStatus.None && accounts.length > 0) {
-    //   if (!token || (token && isTokenExpired(token))) {
-    //     instance
-    //       .acquireTokenSilent({
-    //         // Adjust scopes and account parameters as needed
-    //         roles: ['toggle'],
-    //         account: accounts[0],
-    //       })
-    //       .then((accessTokenResponse) => {
-    //         console.log(
-    //           'Silent token acquisition successful',
-    //           accessTokenResponse
-    //         );
-    //         const newToken = accessTokenResponse.idToken;
-    //         setToken(newToken);
-    //       })
-    //       .catch(async (error) => {
-    //         console.log(
-    //           'Silent token acquisition fails. Acquiring token using redirect'
-    //         );
-    //         console.log(error);
-    //       });
-    //   }
-    // }
+    if (inProgress === InteractionStatus.None && accounts.length > 0) {
+      if (!token || (token && isTokenExpired(token))) {
+        instance
+          .acquireTokenSilent({
+            // Adjust scopes and account parameters as needed
+            roles: ['toggle'],
+            account: accounts[0],
+          })
+          .then((accessTokenResponse) => {
+            console.log(
+              'Silent token acquisition successful',
+              accessTokenResponse
+            );
+            const newToken = accessTokenResponse.idToken;
+            setToken(newToken);
+          })
+          .catch(async (error) => {
+            console.log(
+              'Silent token acquisition fails. Acquiring token using redirect'
+            );
+            console.log(error);
+          });
+      }
+    }
   }, [accounts, token, instance, inProgress]);
 
   const handleDarkModeToggle = () => {
