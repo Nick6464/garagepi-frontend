@@ -77,7 +77,6 @@ const HomePage = () => {
 
     console.log('get active account', instance.getActiveAccount());
 
-
     const isTokenExpired = (token) => {
       if (!token) return true;
       const expiration = jwtDecode(token).exp;
@@ -145,8 +144,8 @@ const HomePage = () => {
     }
 
     const functionAppUrl = isDev
-      ? 'http://localhost:7071'
-      : 'https://garagepi-func.azurewebsites.net';
+      ? 'http://localhost:7071/press'
+      : 'https://garagepi-func.azurewebsites.net/api/toggle';
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -156,7 +155,7 @@ const HomePage = () => {
     };
 
     axios
-      .get(`${functionAppUrl}/api/toggle`, { headers })
+      .get(functionAppUrl, headers)
       .then((response) => {
         console.log(response.data);
         setLoading(false);
@@ -165,10 +164,10 @@ const HomePage = () => {
         }
       })
       .catch((error) => {
-        console.error('Error:', error);
+        // console.error('Error:', error);
         setLoading(false);
         setShowError(true); // Show error message
-        setSnackbarMessage(error.message);
+        setSnackbarMessage(error.response.data || error.message);
         setTimeout(() => {
           setShowError(false); // Hide error message after 3 seconds
         }, 3000);
