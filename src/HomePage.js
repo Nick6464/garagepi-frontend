@@ -3,16 +3,29 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { makeStyles } from '@mui/styles';
 import { toggleDarkMode } from './utils';
 import Cookies from 'universal-cookie';
-import { Menu, MenuItem, IconButton, CircularProgress } from '@mui/material'; // Import Menu and MenuItem
+import {
+  Menu,
+  MenuItem,
+  IconButton,
+  CircularProgress,
+  Grid,
+  Typography,
+} from '@mui/material'; // Import Menu and MenuItem
 import axios from 'axios';
 import LoginPage from './LoginPage';
-import { useIsAuthenticated, useMsal } from '@azure/msal-react';
-import {
-  InteractionRequiredAuthError,
-  InteractionStatus,
-} from '@azure/msal-browser';
-import DarkModeSwitch from './DarkModeSwitch';
+import ClaimWindow from './ClaimWindow';
 import { Garage, Warning } from '@mui/icons-material';
+import { createClient } from '@supabase/supabase-js';
+import { LoadingButton } from '@mui/lab';
+import GarageDoorCard from './GarageDoorCard';
+
+const SUPABASE_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0cXRnaW5rbHpianJodXNwcHd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ1NDU2MDgsImV4cCI6MjAzMDEyMTYwOH0.sYFd9abYQhP7zOXCCeddULNsn6ViA7XEKwyZGZuDSQM';
+
+const supabase = createClient(
+  'https://itqtginklzbjrhusppwt.supabase.co',
+  SUPABASE_KEY
+);
 
 const useStyles = makeStyles((theme) => ({
   centerContainer: {
@@ -37,100 +50,71 @@ const isDev = process.env.NODE_ENV === 'development';
 
 const HomePage = () => {
   const classes = useStyles();
-  const [darkMode, setDarkMode] = useState(null);
-  const [token, setToken] = useState(null);
-  const [viewOnly, setViewOnly] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [session, setSession] = useState(false);
+  const [user, setUser] = useState(false);
+  const [garageDoors, setGarageDoors] = useState([]);
 
   // State for managing Menu
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const { instance, accounts, inProgress } = useMsal();
-
-  const isAuthed = useIsAuthenticated();
+  const [claimWindow, setClaimWindow] = useState(false);
 
   useEffect(() => {
-    const darkModeCookie = cookies.get('darkMode');
-    if (darkModeCookie === false) {
-      setDarkMode(false);
-    } else {
-      setDarkMode(true);
-    }
+    supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      if (session && session.provider_token) {
+        setUser(session.user);
+        window.localStorage.setItem(
+          'oauth_provider_token',
+          session.provider_token
+        );
+      }
+
+      if (session && session.provider_refresh_token) {
+        setUser(session.user);
+        window.localStorage.setItem(
+          'oauth_provider_refresh_token',
+          session.provider_refresh_token
+        );
+      }
+
+      if (event === 'SIGNED_OUT') {
+        window.localStorage.removeItem('oauth_provider_token');
+        window.localStorage.removeItem('oauth_provider_refresh_token');
+      }
+    });
   }, []);
 
   useEffect(() => {
-    if (inProgress === InteractionStatus.None && accounts.length > 0) {
-      const accessTokenRequest = {
-        roles: ['toggle'],
-        account: accounts[0],
-      };
-      instance
-        .acquireTokenSilent(accessTokenRequest)
-        .then((accessTokenResponse) => {
-          // Acquire token success
-          let idToken = accessTokenResponse.idToken;
-          console.log('Silent token acquisition successful');
-          setToken(idToken);
-        })
-        .catch((error) => {
-          //Acquire token silent failure, and send an interactive request
-          if (error instanceof InteractionRequiredAuthError) {
-            instance
-              .acquireTokenRedirect()
-              .then((accessTokenResponse) => {
-                // Acquire token interactive success
-                let idToken = accessTokenResponse.idToken;
-                setToken(idToken);
-              })
-              .catch((error) => {
-                // Acquire token interactive failure
-                console.error(error);
-              });
-          }
-        });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Once the user has logged in, get all the garage doors the user has
+  useEffect(() => {
+    if (user) fetchGarageDoors();
+  }, [user]);
+
+  const fetchGarageDoors = async () => {
+    const { data: garageDoors, error } = await supabase
+      .from('garages')
+      .select('*');
+
+    if (error) {
+      console.error('Error fetching garage doors:', error.message);
+    } else {
+      console.log('Garage Doors:', garageDoors);
+      setGarageDoors(garageDoors);
     }
-  }, [accounts, instance, inProgress]);
-
-  const handleDarkModeToggle = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
-    toggleDarkMode(newDarkMode);
-    window.location.reload();
-  };
-
-  const handleAction = () => {
-    setLoading(true);
-    const functionAppUrl = isDev
-      ? 'http://localhost:7071'
-      : 'https://garagepi-func.azurewebsites.net';
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    };
-
-    axios
-      .get(`${functionAppUrl}/api/toggle`, { headers })
-      .then((response) => {
-        console.log(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        setLoading(false);
-        setShowError(true); // Show error message
-        setTimeout(() => {
-          setShowError(false); // Hide error message after 3 seconds
-        }, 3000);
-      });
-  };
-
-  const handleLogout = async () => {
-    const currentAccount = instance.getActiveAccount();
-    console.log(currentAccount);
-    // logout
-    const logoutHint = currentAccount.idTokenClaims.login_hint;
-    await instance.logoutRedirect({ logoutHint: logoutHint });
   };
 
   // Function to open Menu
@@ -143,60 +127,70 @@ const HomePage = () => {
     setAnchorEl(null);
   };
 
-  // const handleOldLogout = async () => {
-  //   // Check if there is an active account
-  //   const activeAccount = instance.getActiveAccount();
-  //   if (activeAccount) {
-  //     // Clear tokens from local storage based on the cache location
-  //     const cacheLocation = activeAccount.tokenCache.cacheLocation;
-  //     localStorage.removeItem(`msal.idtoken.${cacheLocation}`);
-  //     localStorage.removeItem(`msal.accessToken.${cacheLocation}`);
-  //   }
-  //   await instance.logoutRedirect(config);
-  // };
+  const logOut = async () => {
+    handleMenuClose();
+    let { error } = await supabase.auth.signOut();
+    if (error) console.error('Sign out error', error.message);
+  };
+
+  const linkGaragePi = () => {
+    handleMenuClose();
+    setClaimWindow(true);
+  };
 
   return (
     <div>
       {/* Dark Mode Toggle and Logout */}
       <div className={classes.settingsContainer}>
-        <DarkModeSwitch
-          sx={{ m: 1 }}
-          checked={darkMode}
-          onChange={handleDarkModeToggle}
-        />
         <SettingsIcon onClick={handleMenuOpen} />
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem disabled={!isAuthed} onClick={handleLogout}>
-            Logout
-          </MenuItem>
-          {/* <MenuItem onClick={handleOldLogout}>Old Logout</MenuItem> */}
+          <MenuItem onClick={linkGaragePi}>Link GaragePi</MenuItem>
+          <MenuItem onClick={logOut}>Logout</MenuItem>
         </Menu>
-        {!viewOnly && !isAuthed && <LoginPage setViewOnly={setViewOnly} />}
+        <LoginPage
+          open={session === null}
+          setUser={setUser}
+          setSession={setSession}
+          supabase={supabase}
+        />
+        <ClaimWindow
+          supabase={supabase}
+          open={claimWindow}
+          setClaimWindow={setClaimWindow}
+          session={session}
+          fetchGarageDoors={fetchGarageDoors}
+        />
       </div>
 
       {/* Open and Close Buttons */}
-      <div className={classes.centerContainer}>
-        {viewOnly && (
-          <h1 style={{ color: 'white' }}>You are in View Only Mode</h1>
+      <Grid container spacing={2} alignItems="center" justifyContent="center">
+        {garageDoors.length > 0 ? (
+          garageDoors.map((garage) => (
+            <GarageDoorCard
+              key={garage.id}
+              garageDoor={garage}
+              session={session}
+              supabase={supabase}
+              fetchGarageDoors={fetchGarageDoors}
+              setClaimWindow={setClaimWindow}
+            />
+          ))
+        ) : (
+          <Grid item>
+            <Typography variant="h6">
+              Looks like you don't have any link GaragePi's.
+            </Typography>
+            <Typography variant="h6">
+              Click the <SettingsIcon />
+              Settings then Link GaragePi
+            </Typography>
+          </Grid>
         )}
-        <IconButton
-          sx={{ backgroundColor: showError ? 'red' : 'primary' }}
-          onClick={handleAction}
-          disableFocusRipple
-        >
-          {showError ? ( // Conditional rendering for the button
-            <Warning /> // Show warning icon in red
-          ) : loading ? (
-            <CircularProgress color="inherit" />
-          ) : (
-            <Garage />
-          )}
-        </IconButton>
-      </div>
+      </Grid>
     </div>
   );
 };
