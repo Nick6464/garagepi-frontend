@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { makeStyles } from '@mui/styles';
-import { toggleDarkMode } from './utils';
 import Cookies from 'universal-cookie';
 import {
   Menu,
@@ -27,29 +25,11 @@ const supabase = createClient(
   SUPABASE_KEY
 );
 
-const useStyles = makeStyles((theme) => ({
-  centerContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-  },
-  settingsContainer: {
-    position: 'absolute',
-    top: '10px',
-    right: '10px',
-    display: 'flex',
-    alignItems: 'center',
-  },
-}));
-
 const cookies = new Cookies();
 
 const isDev = process.env.NODE_ENV === 'development';
 
 const HomePage = () => {
-  const classes = useStyles();
   const [session, setSession] = useState(false);
   const [user, setUser] = useState(false);
   const [garageDoors, setGarageDoors] = useState([]);
@@ -141,7 +121,15 @@ const HomePage = () => {
   return (
     <div>
       {/* Dark Mode Toggle and Logout */}
-      <div className={classes.settingsContainer}>
+      <div
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         <SettingsIcon onClick={handleMenuOpen} />
         <Menu
           anchorEl={anchorEl}
