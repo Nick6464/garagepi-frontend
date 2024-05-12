@@ -162,7 +162,7 @@ function Status(props) {
 
   useEffect(() => {
     checkStatus();
-  }, []);
+  });
 
   const checkStatus = async () => {
     try {
@@ -172,8 +172,7 @@ function Status(props) {
         'ngrok-skip-browser-warning': 'true',
       };
 
-      const response = await axios.get(`${ip}/test`, { headers });
-      const data = response.data;
+      await axios.get(`${ip}/test`, { headers });
       setStatus('Online');
     } catch (error) {
       console.error(error); // Log the error for debugging purposes
@@ -185,9 +184,9 @@ function Status(props) {
     <Typography
       variant="subtitle1"
       color={
-        status == 'Loading...'
+        status === 'Loading...'
           ? 'primary'
-          : status == 'Online'
+          : status === 'Online'
           ? 'green'
           : 'error'
       }

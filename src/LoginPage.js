@@ -1,7 +1,5 @@
-import React from 'react';
-import Button from '@mui/material/Button';
+import { LoadingButton } from '@mui/lab';
 import {
-  Box,
   Divider,
   Grid,
   Modal,
@@ -9,9 +7,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import Button from '@mui/material/Button';
+import React from 'react';
 import GoogleButton from 'react-google-button';
-import { red } from '@mui/material/colors';
 
 const LoginPage = (props) => {
   const { supabase, setUser, setSession, open } = props;

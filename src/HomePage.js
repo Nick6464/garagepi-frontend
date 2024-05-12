@@ -1,21 +1,10 @@
-import React, { useState, useEffect } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
-import Cookies from 'universal-cookie';
-import {
-  Menu,
-  MenuItem,
-  IconButton,
-  CircularProgress,
-  Grid,
-  Typography,
-} from '@mui/material'; // Import Menu and MenuItem
-import axios from 'axios';
-import LoginPage from './LoginPage';
-import ClaimWindow from './ClaimWindow';
-import { Garage, Warning } from '@mui/icons-material';
+import { Grid, Menu, MenuItem, Typography } from '@mui/material'; // Import Menu and MenuItem
 import { createClient } from '@supabase/supabase-js';
-import { LoadingButton } from '@mui/lab';
+import React, { useEffect, useState } from 'react';
+import ClaimWindow from './ClaimWindow';
 import GarageDoorCard from './GarageDoorCard';
+import LoginPage from './LoginPage';
 
 const SUPABASE_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0cXRnaW5rbHpianJodXNwcHd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ1NDU2MDgsImV4cCI6MjAzMDEyMTYwOH0.sYFd9abYQhP7zOXCCeddULNsn6ViA7XEKwyZGZuDSQM';
@@ -24,10 +13,6 @@ const supabase = createClient(
   'https://itqtginklzbjrhusppwt.supabase.co',
   SUPABASE_KEY
 );
-
-const cookies = new Cookies();
-
-const isDev = process.env.NODE_ENV === 'development';
 
 const HomePage = () => {
   const [session, setSession] = useState(false);

@@ -3,8 +3,6 @@ import { Grid, Modal, Paper, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import axios from 'axios';
 
-const NODE_ENV = process.env.NODE_ENV;
-
 const ClaimWindow = (props) => {
   const { session, setClaimWindow, open, supabase, fetchGarageDoors } = props;
   const [loading, setLoading] = useState(false);
