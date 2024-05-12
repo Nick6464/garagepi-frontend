@@ -28,7 +28,7 @@ function GarageDoorCard(props) {
       const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${session.access_token}`,
-        'ngrok-skip-browser-warning': 'true',
+        'bypass-tunnel-reminder': 'true',
       };
 
       // Send a request to the server to open the garage which will include the token
@@ -169,7 +169,7 @@ function Status(props) {
       const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${session.access_token}`,
-        'ngrok-skip-browser-warning': 'true',
+        'bypass-tunnel-reminder': 'true',
       };
 
       await axios.get(`${ip}/test`, { headers });
