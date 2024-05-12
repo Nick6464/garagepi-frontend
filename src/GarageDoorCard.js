@@ -22,7 +22,7 @@ function GarageDoorCard(props) {
   const { garageDoor, session, supabase, fetchGarageDoors } = props;
   const { id, garage_name, ip_address } = garageDoor;
 
-  const handleButtonClick = async (garage) => {
+  const handleButtonClick = async () => {
     setLoading(true);
     try {
       const headers = {
@@ -32,13 +32,13 @@ function GarageDoorCard(props) {
       };
 
       // Send a request to the server to open the garage which will include the token
-      const response = await axios.get(`${garage.ip_address}/press`, {
+      const response = await axios.get(`${garageDoor.ip_address}/press`, {
         headers,
       });
 
       // If the response is an error then throw an error
       if (response.error) {
-        throw new Error(response.error);
+        throw response.error;
       }
 
       // Log the response
