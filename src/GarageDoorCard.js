@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Circle, Garage, Warning, MoreVert } from '@mui/icons-material';
+import {
+  Circle,
+  Garage,
+  Warning,
+  MoreVert,
+  Refresh,
+} from '@mui/icons-material';
 import {
   CircularProgress,
   Grid,
@@ -118,7 +124,9 @@ function GarageDoorCard(props) {
                   sx={{ height: '100%' }}
                 >
                   <Grid item>
-                    <Typography variant="h4">{garage_name}</Typography>
+                    <Typography sx={{ overflowX: 'hidden' }} variant="h4">
+                      {garage_name}
+                    </Typography>
                     <Status session={session} ip={ip_address} />
                   </Grid>
                 </Grid>
@@ -162,7 +170,18 @@ function Status(props) {
 
   useEffect(() => {
     checkStatus();
-  });
+  }, []);
+
+  // Every 5 seconds, check if 'status' is offline
+  // If it is, check the status again
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (status === 'Offline') {
+        checkStatus();
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [status]);
 
   const checkStatus = async () => {
     try {
@@ -192,6 +211,16 @@ function Status(props) {
       }
     >
       <Circle fontSize="inherit" color="inherit" /> {status}
+      <IconButton
+        size="small"
+        onClick={() => {
+          setStatus('Loading...');
+          checkStatus();
+        }}
+        style={{ marginLeft: 5 }}
+      >
+        <Refresh color="#000000" fontSize="inherit" />
+      </IconButton>
     </Typography>
   );
 }
