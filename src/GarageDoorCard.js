@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Circle,
   Garage,
@@ -168,8 +168,6 @@ function Status(props) {
 
   const [status, setStatus] = React.useState('Loading...');
 
-  checkStatus();
-
   // Every 5 seconds, check if 'status' is offline
   // If it is, check the status again
   setInterval(() => {
@@ -193,6 +191,7 @@ function Status(props) {
       setStatus('Offline');
     }
   };
+  checkStatus();
 
   return (
     <Typography
