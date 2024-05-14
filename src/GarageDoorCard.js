@@ -18,12 +18,14 @@ import {
 import axios from 'axios';
 import './styles.css';
 import ClaimWindow from './ClaimWindow';
+import ShareAccess from './ShareAccess';
 
 function GarageDoorCard(props) {
   const [loading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [claimWindow, setClaimWindow] = useState(false);
+  const [shareWindow, setShareWindow] = useState(false);
 
   const { garageDoor, session, supabase, fetchGarageDoors } = props;
   const { id, garage_name, ip_address } = garageDoor;
@@ -78,6 +80,12 @@ function GarageDoorCard(props) {
         session={session}
         fetchGarageDoors={fetchGarageDoors}
         stage={1}
+      />
+      <ShareAccess
+        open={shareWindow}
+        setShareWindow={setShareWindow}
+        session={session}
+        garageDoor={garageDoor}
       />
       <Paper elevation={3} sx={{ pb: 2, pl: 2 }}>
         <Grid
@@ -144,7 +152,14 @@ function GarageDoorCard(props) {
               <MoreVert />
             </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-              <MenuItem>Share Access</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setAnchorEl(undefined);
+                  setShareWindow(true);
+                }}
+              >
+                Share Access
+              </MenuItem>
               <MenuItem
                 onClick={() => {
                   setClaimWindow(true);

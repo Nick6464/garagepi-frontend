@@ -21,6 +21,8 @@ const LoginPage = (props) => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
 
+  const isDev = process.env.NODE_ENV === 'development';
+
   const handleAuth = async () => {
     setLoading(true);
     if (isLogin) {
@@ -178,7 +180,11 @@ const LoginPage = (props) => {
                 onClick={async () => {
                   let { data, error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
-                    options: { redirectTo: window.location.href },
+                    options: {
+                      redirectTo: isDev
+                        ? 'https://localhost:3000'
+                        : 'https://garagepi.site',
+                    },
                   });
                   console.log(data, error);
                 }}
