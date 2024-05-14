@@ -168,20 +168,15 @@ function Status(props) {
 
   const [status, setStatus] = React.useState('Loading...');
 
-  useEffect(() => {
-    checkStatus();
-  }, []);
+  checkStatus();
 
   // Every 5 seconds, check if 'status' is offline
   // If it is, check the status again
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (status === 'Offline') {
-        checkStatus();
-      }
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [status]);
+  setInterval(() => {
+    if (status === 'Offline') {
+      checkStatus();
+    }
+  }, 5000);
 
   const checkStatus = async () => {
     try {
