@@ -1,3 +1,4 @@
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { LoadingButton } from '@mui/lab';
 import {
   Divider,
@@ -8,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import Button from '@mui/material/Button';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import GoogleButton from 'react-google-button';
 
 const LoginPage = (props) => {
@@ -20,6 +21,9 @@ const LoginPage = (props) => {
   const [confirmEmail, setConfirmEmail] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
+  const [captchaToken, setCaptchaToken] = useState();
+
+  const captcha = useRef();
 
   const isDev = process.env.NODE_ENV === 'development';
 
@@ -42,7 +46,10 @@ const LoginPage = (props) => {
       let { data, error } = await supabase.auth.signUp({
         email: email,
         password: password,
+        options: { captchaToken },
       });
+
+      captcha.current.resetCaptcha();
 
       if (error) {
         console.error(error);
@@ -156,6 +163,17 @@ const LoginPage = (props) => {
                 type="password"
                 autoComplete="confirm-password"
                 onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </Grid>
+          )}
+          {!isLogin && (
+            <Grid item xs={12}>
+              <HCaptcha
+                ref={captcha}
+                sitekey="126d210b-a7cd-4add-88a3-5b8e1714910d"
+                onVerify={(token) => {
+                  setCaptchaToken(token);
+                }}
               />
             </Grid>
           )}
