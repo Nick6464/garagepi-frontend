@@ -66,7 +66,6 @@ function GarageDoorCard(props) {
   };
 
   const enterPairingMode = async () => {
-    setPairing(true);
     try {
       const headers = {
         'Content-Type': 'application/json',
@@ -93,6 +92,7 @@ function GarageDoorCard(props) {
       // Log the response
       console.log(response);
     } catch (error) {
+      setPairing(false);
       console.error(error);
       setShowError(true);
       // Add a call back to make the error disappear after 2 seconds
@@ -100,7 +100,6 @@ function GarageDoorCard(props) {
         setShowError(false);
       }, 2000);
     }
-    setPairing(false);
   };
 
   const open = Boolean(anchorEl);
