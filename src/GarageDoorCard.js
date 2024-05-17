@@ -269,7 +269,7 @@ function Status(props) {
   };
 
   useEffect(() => {
-    checkStatus();
+    if (!pairing && !fetchingStatus) checkStatus();
   });
 
   return (
