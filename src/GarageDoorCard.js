@@ -238,14 +238,6 @@ function Status(props) {
 
   const [status, setStatus] = React.useState('Loading...');
 
-  // Every 5 seconds, check if 'status' is offline
-  // If it is, check the status again
-  setInterval(() => {
-    if (status === 'Offline') {
-      checkStatus();
-    }
-  }, 5000);
-
   const checkStatus = async () => {
     try {
       if (fetchingStatus || pairing) return;
