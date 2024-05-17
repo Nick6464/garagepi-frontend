@@ -176,7 +176,12 @@ function GarageDoorCard(props) {
                     <Typography sx={{ overflowX: 'hidden' }} variant="h4">
                       {garage_name}
                     </Typography>
-                    <Status session={session} ip={ip_address} />
+                    <Status
+                      fetchingStatus={fetchingStatus}
+                      setFetchingStatus={setFetchingStatus}
+                      session={session}
+                      ip={ip_address}
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -228,7 +233,7 @@ function GarageDoorCard(props) {
 export default GarageDoorCard;
 
 function Status(props) {
-  const { ip, session } = props;
+  const { ip, session, setFetchingStatus, fetchingStatus } = props;
 
   const [status, setStatus] = React.useState('Loading...');
 
