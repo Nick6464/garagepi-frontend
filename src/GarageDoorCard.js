@@ -242,12 +242,12 @@ function Status(props) {
     try {
       if (fetchingStatus || pairing) return;
 
+      setFetchingStatus(true);
       const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${session.access_token}`,
         'bypass-tunnel-reminder': 'true',
       };
-      setFetchingStatus(true);
 
       await axios.get(`${ip}/test`, { headers });
       setStatus('Online');
@@ -260,9 +260,7 @@ function Status(props) {
     }
   };
 
-  useEffect(() => {
-    if (!pairing && !fetchingStatus) checkStatus();
-  });
+  checkStatus();
 
   return (
     <Typography
