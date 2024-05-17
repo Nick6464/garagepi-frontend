@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Circle,
   Garage,
@@ -267,7 +267,10 @@ function Status(props) {
       setStatus('Offline');
     }
   };
-  checkStatus();
+
+  useEffect(() => {
+    checkStatus();
+  }, []);
 
   return (
     <Typography
