@@ -177,6 +177,7 @@ function GarageDoorCard(props) {
                       {garage_name}
                     </Typography>
                     <Status
+                      pairing={pairing}
                       fetchingStatus={fetchingStatus}
                       setFetchingStatus={setFetchingStatus}
                       session={session}
@@ -233,7 +234,7 @@ function GarageDoorCard(props) {
 export default GarageDoorCard;
 
 function Status(props) {
-  const { ip, session, setFetchingStatus, fetchingStatus } = props;
+  const { ip, session, setFetchingStatus, fetchingStatus, pairing } = props;
 
   const [status, setStatus] = React.useState('Loading...');
 
