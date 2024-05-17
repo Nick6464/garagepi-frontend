@@ -279,7 +279,8 @@ function Status(props) {
           : 'error'
       }
     >
-      <Circle fontSize="inherit" color="inherit" /> {status}
+      <Circle fontSize="inherit" color="inherit" />{' '}
+      {pairing ? 'Pairing...' : status}
       <IconButton
         size="small"
         onClick={() => {
