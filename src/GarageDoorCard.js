@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Circle,
   Garage,
@@ -260,7 +260,10 @@ function Status(props) {
     }
   };
 
-  checkStatus();
+  useEffect(() => {
+    if (pairing || fetchingStatus || status !== 'Loading...') return;
+    checkStatus();
+  });
 
   return (
     <Typography
