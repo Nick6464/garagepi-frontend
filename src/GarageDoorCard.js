@@ -270,7 +270,7 @@ function Status(props) {
 
   useEffect(() => {
     checkStatus();
-  }, []);
+  });
 
   return (
     <Typography
