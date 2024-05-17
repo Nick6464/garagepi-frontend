@@ -27,6 +27,9 @@ function GarageDoorCard(props) {
   const [claimWindow, setClaimWindow] = useState(false);
   const [shareWindow, setShareWindow] = useState(false);
 
+  const [fetchingStatus, setFetchingStatus] = useState(false);
+  const [pairing, setPairing] = useState(false);
+
   const { garageDoor, session, supabase, fetchGarageDoors } = props;
   const { id, garage_name, ip_address } = garageDoor;
 
@@ -60,6 +63,44 @@ function GarageDoorCard(props) {
       }, 2000);
     }
     setLoading(false);
+  };
+
+  const enterPairingMode = async () => {
+    setPairing(true);
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+        'bypass-tunnel-reminder': 'true',
+      };
+
+      // Send a request to the server to open the garage which will include the token
+      const response = await axios.get(`${garageDoor.ip_address}/pairingMode`, {
+        headers,
+      });
+
+      // If the response is an error then throw an error
+      if (response.error) {
+        throw response.error;
+      }
+
+      // Enable the pairing mode for 10 seconds
+      setPairing(true);
+      setTimeout(() => {
+        setPairing(false);
+      }, 10000);
+
+      // Log the response
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      setShowError(true);
+      // Add a call back to make the error disappear after 2 seconds
+      setTimeout(() => {
+        setShowError(false);
+      }, 2000);
+    }
+    setPairing(false);
   };
 
   const open = Boolean(anchorEl);
@@ -168,6 +209,14 @@ function GarageDoorCard(props) {
               >
                 Rename
               </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setAnchorEl(undefined);
+                  enterPairingMode();
+                }}
+              >
+                Enter Pairing Mode
+              </MenuItem>
             </Menu>
           </Grid>
         </Grid>
@@ -193,15 +242,21 @@ function Status(props) {
 
   const checkStatus = async () => {
     try {
+      if (fetchingStatus) return;
+
       const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${session.access_token}`,
         'bypass-tunnel-reminder': 'true',
       };
+      setFetchingStatus(true);
 
       await axios.get(`${ip}/test`, { headers });
       setStatus('Online');
+
+      setFetchingStatus(false);
     } catch (error) {
+      setFetchingStatus(false);
       console.error(error); // Log the error for debugging purposes
       setStatus('Offline');
     }
