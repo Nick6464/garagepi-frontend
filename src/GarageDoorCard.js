@@ -248,7 +248,7 @@ function Status(props) {
 
   const checkStatus = async () => {
     try {
-      if (fetchingStatus) return;
+      if (fetchingStatus || pairing) return;
 
       const headers = {
         'Content-Type': 'application/json',
