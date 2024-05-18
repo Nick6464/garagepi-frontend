@@ -41,9 +41,7 @@ function ShareAccess(props) {
 
       // Send a request to the server to open the garage which will include the token
       const response = await axios.post(
-        isDev
-          ? 'http://localhost:7071/api/shareAccess'
-          : 'https://garagepi-func.azurewebsites.net/api/shareAccess',
+        'https://garagepi-func.azurewebsites.net/api/shareAccess',
         {
           hwid: garageDoor.hwid,
           email: email,
@@ -60,7 +58,7 @@ function ShareAccess(props) {
       console.log(response);
     } catch (error) {
       console.error(error);
-      setError(true);
+      setError(error.response.data);
       setLoading(false);
       // Add a call back to make the error disappear after 2 seconds
       setTimeout(() => {

@@ -207,45 +207,48 @@ function GarageDoorCard(props) {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item>
-            <IconButton
-              sx={{ ml: -5, mt: -2, position: 'absolute' }}
-              aria-controls={open ? 'basic-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleClick}
-            >
-              <MoreVert />
-            </IconButton>
-            <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-              <MenuItem
-                disabled={blockingMode()}
-                onClick={() => {
-                  setAnchorEl(undefined);
-                  setShareWindow(true);
-                }}
+          {session.user.id === garageDoor.owner_id && (
+            <Grid item>
+              <IconButton
+                sx={{ ml: -5, mt: -2, position: 'absolute' }}
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
               >
-                Share Access
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setClaimWindow(true);
-                  setAnchorEl(undefined);
-                }}
-              >
-                Rename
-              </MenuItem>
-              <MenuItem
-                disabled={blockingMode()}
-                onClick={() => {
-                  setAnchorEl(undefined);
-                  enterPairingMode();
-                }}
-              >
-                Enter Pairing Mode
-              </MenuItem>
-            </Menu>
-          </Grid>
+                <MoreVert />
+              </IconButton>
+              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(undefined);
+                    setShareWindow(true);
+                  }}
+                >
+                  Manage Access
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setClaimWindow(true);
+                    setAnchorEl(undefined);
+                  }}
+                >
+                  Rename
+                </MenuItem>
+                <MenuItem
+                  disabled={blockingMode()}
+                  onClick={() => {
+                    setAnchorEl(undefined);
+                    enterPairingMode();
+                  }}
+                >
+                  Enter Pairing Mode
+                </MenuItem>
+                {/* If the users ID matches the OwnerID of the Garage Door,
+              allow the user to manage access */}
+              </Menu>
+            </Grid>
+          )}
         </Grid>
       </Paper>
     </Grid>
