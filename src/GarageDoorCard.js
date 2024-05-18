@@ -105,11 +105,20 @@ function GarageDoorCard(props) {
   };
 
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const blockingMode = () => {
+    if (pairing || fetchingStatus || status !== 'Online') {
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -144,7 +153,7 @@ function GarageDoorCard(props) {
             >
               <Grid item sx={{ height: 120, width: 120 }}>
                 <IconButton
-                  disbabled={pairing || fetchingStatus || status !== 'Online'}
+                  disabled={blockingMode()}
                   disableFocusRipple
                   sx={{
                     color: '#fff',
@@ -154,7 +163,13 @@ function GarageDoorCard(props) {
                     boxShadow: '0 2px 4px darkslategray',
                     fontSize: 50,
                   }}
-                  style={{ backgroundColor: showError ? 'red' : '#003892' }}
+                  style={{
+                    backgroundColor: showError
+                      ? 'red'
+                      : blockingMode()
+                      ? 'secondary'
+                      : '#003892',
+                  }}
                   className="garageButton"
                   onClick={handleButtonClick}
                 >
@@ -204,7 +219,7 @@ function GarageDoorCard(props) {
             </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
               <MenuItem
-                disbabled={pairing || fetchingStatus || status !== 'Online'}
+                disabled={blockingMode()}
                 onClick={() => {
                   setAnchorEl(undefined);
                   setShareWindow(true);
@@ -221,7 +236,7 @@ function GarageDoorCard(props) {
                 Rename
               </MenuItem>
               <MenuItem
-                disbabled={pairing || fetchingStatus || status !== 'Online'}
+                disabled={blockingMode()}
                 onClick={() => {
                   setAnchorEl(undefined);
                   enterPairingMode();
