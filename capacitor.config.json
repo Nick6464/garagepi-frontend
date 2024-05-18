@@ -1,8 +1,0 @@
-{
-    "appId": "io.ionic.96f8bd0e",
-    "appName": "garagepi",
-    "bundledWebRuntime": false,
-    "npmClient": "npm",
-    "webDir": "build",
-    "cordova": {}
-  }

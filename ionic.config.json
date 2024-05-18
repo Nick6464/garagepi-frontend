@@ -1,7 +1,0 @@
-{
-    "name": "garagepi",
-    "integrations": {
-      "capacitor": {}
-    },
-    "type": "react"
-}
