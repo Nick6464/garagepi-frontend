@@ -30,6 +30,8 @@ function GarageDoorCard(props) {
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [pairing, setPairing] = useState(false);
 
+  const [status, setStatus] = React.useState('Loading...');
+
   const { garageDoor, session, supabase, fetchGarageDoors } = props;
   const { id, garage_name, ip_address } = garageDoor;
 
@@ -142,6 +144,7 @@ function GarageDoorCard(props) {
             >
               <Grid item sx={{ height: 120, width: 120 }}>
                 <IconButton
+                  disbabled={pairing || fetchingStatus || status !== 'Online'}
                   disableFocusRipple
                   sx={{
                     color: '#fff',
@@ -176,6 +179,8 @@ function GarageDoorCard(props) {
                       {garage_name}
                     </Typography>
                     <Status
+                      status={status}
+                      setStatus={setStatus}
                       pairing={pairing}
                       fetchingStatus={fetchingStatus}
                       setFetchingStatus={setFetchingStatus}
@@ -199,6 +204,7 @@ function GarageDoorCard(props) {
             </IconButton>
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
               <MenuItem
+                disbabled={pairing || fetchingStatus || status !== 'Online'}
                 onClick={() => {
                   setAnchorEl(undefined);
                   setShareWindow(true);
@@ -215,6 +221,7 @@ function GarageDoorCard(props) {
                 Rename
               </MenuItem>
               <MenuItem
+                disbabled={pairing || fetchingStatus || status !== 'Online'}
                 onClick={() => {
                   setAnchorEl(undefined);
                   enterPairingMode();
@@ -233,9 +240,15 @@ function GarageDoorCard(props) {
 export default GarageDoorCard;
 
 function Status(props) {
-  const { ip, session, setFetchingStatus, fetchingStatus, pairing } = props;
-
-  const [status, setStatus] = React.useState('Loading...');
+  const {
+    ip,
+    session,
+    setFetchingStatus,
+    fetchingStatus,
+    pairing,
+    status,
+    setStatus,
+  } = props;
 
   const checkStatus = async () => {
     try {
