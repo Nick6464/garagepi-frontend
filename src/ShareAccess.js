@@ -98,24 +98,26 @@ function ShareAccess(props) {
               onChange={(e) => setEmail(e.target.value)}
             />
           </Grid>
-          <Grid item xs={6}>
-            <LoadingButton
-              loading={loading}
-              onClick={sendShareRequest}
-              variant="contained"
-              color="primary"
-            >
-              Share
-            </LoadingButton>
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => setShareWindow(false)}
-            >
-              Cancel
-            </Button>
+          <Grid container item xs={12} justifyContent="space-evenly">
+            <Grid item>
+              <LoadingButton
+                loading={loading}
+                onClick={sendShareRequest}
+                variant="contained"
+                color="primary"
+              >
+                Share
+              </LoadingButton>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => setShareWindow(false)}
+              >
+                Cancel
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </Paper>

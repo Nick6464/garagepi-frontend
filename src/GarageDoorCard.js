@@ -293,7 +293,7 @@ function Status(props) {
   };
 
   useEffect(() => {
-    if (pairing || fetchingStatus || status !== 'Loading...') return;
+    if (pairing || fetchingStatus) return;
     checkStatus();
   });
 
