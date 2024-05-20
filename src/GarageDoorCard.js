@@ -29,8 +29,6 @@ function GarageDoorCard(props) {
 
   const [pairing, setPairing] = useState(false);
 
-  const [status, setStatus] = React.useState('Loading...');
-
   const { garageDoor, session, supabase, fetchGarageDoors } = props;
   const { id, garage_name, ip_address } = garageDoor;
 
@@ -114,9 +112,6 @@ function GarageDoorCard(props) {
   };
 
   const blockingMode = () => {
-    if (pairing || status !== 'Online') {
-      return true;
-    }
     return false;
   };
 
@@ -193,8 +188,6 @@ function GarageDoorCard(props) {
                       {garage_name}
                     </Typography>
                     <Status
-                      status={status}
-                      setStatus={setStatus}
                       pairing={pairing}
                       session={session}
                       ip={ip_address}
@@ -257,36 +250,38 @@ function GarageDoorCard(props) {
 export default GarageDoorCard;
 
 function Status(props) {
-  const { ip, session, pairing, status, setStatus } = props;
+  const { ip, session, pairing } = props;
 
   const [fetchingStatus, setFetchingStatus] = useState(false);
+  const [status, setStatus] = useState('Loading...');
 
   const checkStatus = async () => {
-    try {
-      if (fetchingStatus || pairing) return;
+    if (fetchingStatus || pairing) return;
 
-      setFetchingStatus(true);
+    setFetchingStatus(true);
+    try {
       const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${session.access_token}`,
         'bypass-tunnel-reminder': 'true',
       };
-
-      await axios.get(`${ip}/test`, { headers });
+      console.log('Checking status at IP:', ip);
+      const response = await axios.get(`${ip}/test`, { headers: headers });
+      console.log(response);
       setStatus('Online');
-
-      setFetchingStatus(false);
     } catch (error) {
-      setFetchingStatus(false);
-      console.error(error); // Log the error for debugging purposes
+      console.error('Error fetching status:', error);
       setStatus('Offline');
+    } finally {
+      setFetchingStatus(false);
     }
   };
 
   useEffect(() => {
-    if (pairing || fetchingStatus) return;
-    checkStatus();
-  });
+    if (!pairing && !fetchingStatus) {
+      checkStatus();
+    }
+  }, []);
 
   return (
     <Typography
