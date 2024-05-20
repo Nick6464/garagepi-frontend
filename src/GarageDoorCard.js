@@ -27,7 +27,10 @@ function GarageDoorCard(props) {
   const [claimWindow, setClaimWindow] = useState(false);
   const [shareWindow, setShareWindow] = useState(false);
 
+  const [fetchingStatus, setFetchingStatus] = useState(false);
   const [pairing, setPairing] = useState(false);
+
+  const [status, setStatus] = React.useState('Loading...');
 
   const { garageDoor, session, supabase, fetchGarageDoors } = props;
   const { id, garage_name, ip_address } = garageDoor;
@@ -112,6 +115,9 @@ function GarageDoorCard(props) {
   };
 
   const blockingMode = () => {
+    if (pairing || fetchingStatus || status !== 'Online') {
+      return true;
+    }
     return false;
   };
 
@@ -188,7 +194,11 @@ function GarageDoorCard(props) {
                       {garage_name}
                     </Typography>
                     <Status
+                      status={status}
+                      setStatus={setStatus}
                       pairing={pairing}
+                      fetchingStatus={fetchingStatus}
+                      setFetchingStatus={setFetchingStatus}
                       session={session}
                       ip={ip_address}
                     />
@@ -250,37 +260,41 @@ function GarageDoorCard(props) {
 export default GarageDoorCard;
 
 function Status(props) {
-  const { ip, session, pairing } = props;
-
-  const [fetchingStatus, setFetchingStatus] = useState(false);
-  const [status, setStatus] = useState('Loading...');
+  const {
+    ip,
+    session,
+    setFetchingStatus,
+    fetchingStatus,
+    pairing,
+    status,
+    setStatus,
+  } = props;
 
   const checkStatus = async () => {
-    if (fetchingStatus || pairing) return;
-
-    setFetchingStatus(true);
     try {
+      if (fetchingStatus || pairing) return;
+
+      setFetchingStatus(true);
       const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${session.access_token}`,
         'bypass-tunnel-reminder': 'true',
       };
-      console.log('Checking status at IP:', ip);
-      const response = await axios.get(`${ip}/test`, { headers: headers });
-      console.log(response);
+
+      await axios.get(`${ip}/test`, { headers });
       setStatus('Online');
-    } catch (error) {
-      console.error('Error fetching status:', error);
-      setStatus('Offline');
-    } finally {
+
       setFetchingStatus(false);
+    } catch (error) {
+      setFetchingStatus(false);
+      console.error(error); // Log the error for debugging purposes
+      setStatus('Offline');
     }
   };
 
   useEffect(() => {
-    if (!pairing && !fetchingStatus && status !== 'Online') {
-      checkStatus();
-    }
+    if (pairing || fetchingStatus || status !== 'Loading...') return;
+    checkStatus();
   });
 
   return (
