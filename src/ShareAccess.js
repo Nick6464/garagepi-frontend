@@ -13,8 +13,6 @@ import { useState } from 'react';
 function ShareAccess(props) {
   const { open, garageDoor, session, setShareWindow } = props;
 
-  const isDev = process.env.NODE_ENV === 'development';
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
