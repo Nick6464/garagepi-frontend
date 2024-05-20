@@ -281,7 +281,7 @@ function Status(props) {
     if (!pairing && !fetchingStatus) {
       checkStatus();
     }
-  }, []);
+  });
 
   return (
     <Typography
