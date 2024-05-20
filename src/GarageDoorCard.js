@@ -27,7 +27,6 @@ function GarageDoorCard(props) {
   const [claimWindow, setClaimWindow] = useState(false);
   const [shareWindow, setShareWindow] = useState(false);
 
-  const [fetchingStatus, setFetchingStatus] = useState(false);
   const [pairing, setPairing] = useState(false);
 
   const [status, setStatus] = React.useState('Loading...');
@@ -115,7 +114,7 @@ function GarageDoorCard(props) {
   };
 
   const blockingMode = () => {
-    if (pairing || fetchingStatus || status !== 'Online') {
+    if (pairing || status !== 'Online') {
       return true;
     }
     return false;
@@ -197,8 +196,6 @@ function GarageDoorCard(props) {
                       status={status}
                       setStatus={setStatus}
                       pairing={pairing}
-                      fetchingStatus={fetchingStatus}
-                      setFetchingStatus={setFetchingStatus}
                       session={session}
                       ip={ip_address}
                     />
@@ -260,15 +257,9 @@ function GarageDoorCard(props) {
 export default GarageDoorCard;
 
 function Status(props) {
-  const {
-    ip,
-    session,
-    setFetchingStatus,
-    fetchingStatus,
-    pairing,
-    status,
-    setStatus,
-  } = props;
+  const { ip, session, pairing, status, setStatus } = props;
+
+  const [fetchingStatus, setFetchingStatus] = useState(false);
 
   const checkStatus = async () => {
     try {
