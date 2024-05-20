@@ -278,7 +278,7 @@ function Status(props) {
   };
 
   useEffect(() => {
-    if (!pairing && !fetchingStatus) {
+    if (!pairing && !fetchingStatus && status !== 'Online') {
       checkStatus();
     }
   });
