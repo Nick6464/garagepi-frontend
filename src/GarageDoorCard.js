@@ -276,19 +276,15 @@ function Status(props) {
     try {
       if (fetchingStatus || pairing) return;
 
-      if (status !== 'Offline') {
-        setFetchingStatus(true);
-        const headers = {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.access_token}`,
-          'bypass-tunnel-reminder': 'true',
-        };
+      setFetchingStatus(true);
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+        'bypass-tunnel-reminder': 'true',
+      };
 
-        await axios.get(`${ip}/test`, { headers });
-        setStatus('Online');
-      } else {
-        fetchGarageDoors();
-      }
+      await axios.get(`${ip}/test`, { headers });
+      setStatus('Online');
 
       setFetchingStatus(false);
     } catch (error) {
@@ -319,8 +315,12 @@ function Status(props) {
       <IconButton
         size="small"
         onClick={() => {
-          setStatus('Loading...');
-          checkStatus();
+          if (status !== 'Loading...' && status !== 'Offline') {
+            setStatus('Loading...');
+            checkStatus();
+          } else {
+            fetchGarageDoors();
+          }
         }}
         style={{ marginLeft: 5 }}
       >
