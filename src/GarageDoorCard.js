@@ -197,6 +197,7 @@ function GarageDoorCard(props) {
                       status={status}
                       setStatus={setStatus}
                       pairing={pairing}
+                      fetchGarageDoors={fetchGarageDoors}
                       fetchingStatus={fetchingStatus}
                       setFetchingStatus={setFetchingStatus}
                       session={session}
@@ -268,21 +269,26 @@ function Status(props) {
     pairing,
     status,
     setStatus,
+    fetchGarageDoors,
   } = props;
 
   const checkStatus = async () => {
     try {
       if (fetchingStatus || pairing) return;
 
-      setFetchingStatus(true);
-      const headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session.access_token}`,
-        'bypass-tunnel-reminder': 'true',
-      };
+      if (status !== 'Offline') {
+        setFetchingStatus(true);
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+          'bypass-tunnel-reminder': 'true',
+        };
 
-      await axios.get(`${ip}/test`, { headers });
-      setStatus('Online');
+        await axios.get(`${ip}/test`, { headers });
+        setStatus('Online');
+      } else {
+        fetchGarageDoors();
+      }
 
       setFetchingStatus(false);
     } catch (error) {
