@@ -314,12 +314,13 @@ function Status(props) {
       {pairing ? 'Pairing...' : status}
       <IconButton
         size="small"
-        onClick={() => {
+        onClick={async () => {
           if (status !== 'Loading...' && status !== 'Offline') {
             setStatus('Loading...');
             checkStatus();
           } else {
-            fetchGarageDoors();
+            await fetchGarageDoors();
+            checkStatus();
           }
         }}
         style={{ marginLeft: 5 }}
