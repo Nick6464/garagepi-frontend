@@ -275,6 +275,7 @@ function Status(props) {
   const checkStatus = async () => {
     try {
       if (fetchingStatus || pairing) return;
+      setStatus('Loading...');
 
       setFetchingStatus(true);
       const headers = {
