@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skeleton, Grid, Paper } from '@mui/material';
+import { Skeleton, Grid } from '@mui/material';
 
 const GarageDoorSkeleton = ({ count }) => {
   return (

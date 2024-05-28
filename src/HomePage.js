@@ -1,5 +1,5 @@
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Grid, Menu, MenuItem, Skeleton, Typography } from '@mui/material'; // Import Menu and MenuItem
+import { Grid, Menu, MenuItem, Typography } from '@mui/material'; // Import Menu and MenuItem
 import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
 import ClaimWindow from './ClaimWindow';
