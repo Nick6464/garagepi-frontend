@@ -1,10 +1,12 @@
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Grid, Menu, MenuItem, Typography } from '@mui/material'; // Import Menu and MenuItem
+import { Grid, Menu, MenuItem, Skeleton, Typography } from '@mui/material'; // Import Menu and MenuItem
 import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
 import ClaimWindow from './ClaimWindow';
 import GarageDoorCard from './GarageDoorCard';
 import LoginPage from './LoginPage';
+import Cookies from 'js-cookie';
+import GarageDoorSkeleton from './GarageDoorSkeleton';
 
 const SUPABASE_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0cXRnaW5rbHpianJodXNwcHd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ1NDU2MDgsImV4cCI6MjAzMDEyMTYwOH0.sYFd9abYQhP7zOXCCeddULNsn6ViA7XEKwyZGZuDSQM';
@@ -18,6 +20,7 @@ const HomePage = () => {
   const [session, setSession] = useState(false);
   const [user, setUser] = useState(false);
   const [garageDoors, setGarageDoors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // State for managing Menu
   const [anchorEl, setAnchorEl] = useState(null);
@@ -79,7 +82,11 @@ const HomePage = () => {
     } else {
       console.log('Garage Doors:', garageDoors);
       setGarageDoors(garageDoors);
+
+      // Store the number of garage doors in a cookie
+      Cookies.set('garageDoorsCount', garageDoors.length);
     }
+    setLoading(false);
   };
 
   // Function to open Menu
@@ -102,6 +109,9 @@ const HomePage = () => {
     handleMenuClose();
     setClaimWindow(true);
   };
+
+  // Get the number of garage doors from the cookie
+  const garageDoorsCount = Cookies.get('garageDoorsCount');
 
   return (
     <div>
@@ -141,7 +151,9 @@ const HomePage = () => {
 
       {/* Open and Close Buttons */}
       <Grid container spacing={2} alignItems="center" justifyContent="center">
-        {garageDoors.length > 0 ? (
+        {loading ? (
+          <GarageDoorSkeleton count={parseInt(garageDoorsCount, 10) || 1} />
+        ) : garageDoors.length > 0 ? (
           garageDoors.map((garage) => (
             <GarageDoorCard
               key={garage.id}
@@ -155,7 +167,7 @@ const HomePage = () => {
         ) : (
           <Grid item>
             <Typography variant="h6">
-              Looks like you don't have any link GaragePi's.
+              Looks like you don't have any linked GaragePi's.
             </Typography>
             <Typography variant="h6">
               Click the <SettingsIcon />
