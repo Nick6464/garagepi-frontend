@@ -57,11 +57,12 @@ function ShareAccess(props) {
     } catch (error) {
       console.error(error);
       setError(error.response.data);
-      setLoading(false);
       // Add a call back to make the error disappear after 2 seconds
       setTimeout(() => {
         setError(false);
       }, 2000);
+    } finally {
+      setLoading(false);
     }
   };
 
