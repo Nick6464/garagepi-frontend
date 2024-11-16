@@ -21,7 +21,7 @@ const CustomToggle = forwardRef(({ onClick }, ref) => (
 
 CustomToggle.displayName = "CustomToggle";
 
-function DeviceCard({ device, onCommand }) {
+function DeviceCard({ device, onCommand, isDarkMode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
 
@@ -32,10 +32,15 @@ function DeviceCard({ device, onCommand }) {
   };
 
   return (
-    <Card className="h-100 border-0 position-relative bg-body">
+    <Card
+      className={`h-100 position-relative ${
+        isDarkMode ? "bg-dark text-light" : "bg-light text-dark"
+      }`}
+      style={{ border: isDarkMode ? "1px solid #2c2c2c" : "1px solid #dee2e6" }}
+    >
       <Dropdown>
         <Dropdown.Toggle as={CustomToggle} />
-        <Dropdown.Menu>
+        <Dropdown.Menu className={isDarkMode ? "dropdown-menu-dark" : ""}>
           <Dropdown.Item onClick={() => setShowShareModal(true)}>
             Share Access
           </Dropdown.Item>
@@ -66,8 +71,10 @@ function DeviceCard({ device, onCommand }) {
             <FaDoorOpen size={48} />
           )}
         </Button>
-        <h5 className="mb-0 text-center text-body">{device.name}</h5>
-        <small className="text-secondary">
+        <h5 className="mb-0 text-center">{device.name}</h5>
+        <small
+          className={isDarkMode ? "text-light-emphasis" : "text-secondary"}
+        >
           {new Date(device.lastUpdated).toLocaleString()}
         </small>
       </Card.Body>
@@ -75,6 +82,7 @@ function DeviceCard({ device, onCommand }) {
         show={showShareModal}
         onHide={() => setShowShareModal(false)}
         device={device}
+        isDarkMode={isDarkMode}
       />
     </Card>
   );
@@ -90,6 +98,7 @@ DeviceCard.propTypes = {
     sharedWith: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   onCommand: PropTypes.func.isRequired,
+  isDarkMode: PropTypes.bool,
 };
 
 CustomToggle.propTypes = {

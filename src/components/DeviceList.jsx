@@ -3,7 +3,7 @@ import { Row, Col, Alert, Spinner } from "react-bootstrap";
 import { useAuth } from "../context/AuthContext";
 import DeviceCard from "./DeviceCard";
 
-function DeviceList() {
+function DeviceList({ isDarkMode }) {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -80,20 +80,33 @@ function DeviceList() {
   };
 
   return (
-    <Row>
-      {!loading && devices.length === 0 && (
-        <Col xs={12}>
-          <Alert variant="info">
-            No garages found. Please add a garage to get started.
-          </Alert>
+    <Row xs={1} md={2} lg={3} className="g-4">
+      {loading ? (
+        <Col xs={12} className="text-center">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
         </Col>
+      ) : (
+        <>
+          {devices.length === 0 && (
+            <Col xs={12}>
+              <Alert variant="info">
+                No garages found. Please add a garage to get started.
+              </Alert>
+            </Col>
+          )}
+          {devices.map((device) => (
+            <Col key={device.deviceId}>
+              <DeviceCard
+                device={device}
+                onCommand={handleDoorCommand}
+                isDarkMode={isDarkMode}
+              />
+            </Col>
+          ))}
+        </>
       )}
-      {devices.map((device) => (
-        <Col key={device.deviceId} xs={12} md={6} lg={4}>
-          <DeviceCard device={device} onCommand={handleDoorCommand} />
-        </Col>
-      ))}
-      {loading && <Spinner />}
       {error && <Alert variant="danger">{error}</Alert>}
     </Row>
   );

@@ -14,7 +14,7 @@ import DeviceList from "./DeviceList";
 import AddDeviceModal from "./AddDeviceModal";
 
 function AppContent() {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const [showSignUp, setShowSignUp] = useState(false);
   const [showAddDevice, setShowAddDevice] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -30,14 +30,14 @@ function AppContent() {
         onSignInClick={() => setShowSignUp(false)}
       />
     ) : (
-      <Login onSignUpClick={() => setShowSignUp(true)} />
+      <Login
+        onSignUpClick={() => setShowSignUp(true)}
+        isDarkMode={isDarkMode}
+      />
     )
   ) : (
     <Container className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className={isDarkMode ? "text-light" : "text-dark"}>
-          Garage Door Control
-        </h1>
         <div className="d-flex gap-2">
           <Form.Check
             type="switch"
@@ -47,13 +47,19 @@ function AppContent() {
             onChange={(e) => setIsDarkMode(e.target.checked)}
             className={isDarkMode ? "text-light" : "text-dark"}
           />
-          <Button variant="primary" onClick={() => setShowAddDevice(true)}>
-            Add Device
-          </Button>
         </div>
+        <Button variant="outline-danger" onClick={signOut}>
+          <i className="bi bi-box-arrow-right"></i>
+        </Button>
       </div>
 
-      <DeviceList />
+      <DeviceList isDarkMode={isDarkMode} />
+      <div className="text-center mt-3">
+        <Button variant="primary" onClick={() => setShowAddDevice(true)}>
+          <i className="bi bi-plus-lg me-2"></i>
+          Add Device
+        </Button>
+      </div>
 
       <AddDeviceModal
         show={showAddDevice}

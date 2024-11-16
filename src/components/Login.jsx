@@ -3,7 +3,11 @@ import PropTypes from "prop-types";
 import { Form, Button, Alert, Container, Card } from "react-bootstrap";
 import { useAuth } from "../context/AuthContext";
 
-function Login({ onSuccess = () => {}, onSignUpClick = () => {} }) {
+function Login({
+  onSuccess = () => {},
+  onSignUpClick = () => {},
+  isDarkMode = false,
+}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -22,8 +26,19 @@ function Login({ onSuccess = () => {}, onSignUpClick = () => {} }) {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center min-vh-100">
-      <Card className="p-4" style={{ maxWidth: "400px", width: "100%" }}>
+    <Container
+      className="d-flex justify-content-center align-items-center min-vh-100"
+      style={{ backgroundColor: isDarkMode ? "#212529" : "#fff" }}
+    >
+      <Card
+        className="p-4"
+        style={{
+          maxWidth: "400px",
+          width: "100%",
+          backgroundColor: isDarkMode ? "#2c3034" : "#fff",
+          color: isDarkMode ? "#fff" : "#212529",
+        }}
+      >
         <Card.Body>
           <h2 className="text-center mb-4">Sign In</h2>
 
@@ -41,6 +56,11 @@ function Login({ onSuccess = () => {}, onSignUpClick = () => {} }) {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                style={{
+                  backgroundColor: isDarkMode ? "#212529" : "#fff",
+                  color: isDarkMode ? "#fff" : "#212529",
+                  borderColor: isDarkMode ? "#495057" : "#ced4da",
+                }}
               />
             </Form.Group>
 
@@ -51,6 +71,11 @@ function Login({ onSuccess = () => {}, onSignUpClick = () => {} }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                style={{
+                  backgroundColor: isDarkMode ? "#212529" : "#fff",
+                  color: isDarkMode ? "#fff" : "#212529",
+                  borderColor: isDarkMode ? "#495057" : "#ced4da",
+                }}
               />
             </Form.Group>
 
@@ -72,6 +97,7 @@ function Login({ onSuccess = () => {}, onSignUpClick = () => {} }) {
 Login.propTypes = {
   onSuccess: PropTypes.func,
   onSignUpClick: PropTypes.func,
+  isDarkMode: PropTypes.bool,
 };
 
 export default Login;
